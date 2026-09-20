@@ -21,6 +21,7 @@
     var href = a.getAttribute('href');
     var where = location.pathname.split('/').pop() || 'index.html';
     if (/Dota-Translator-Setup\.exe$/.test(href)) gtag('event', 'download_click', { page: where, label: a.textContent.trim().slice(0, 40) });
+    else if (/ko-fi.com/.test(href)) gtag('event', 'donate_click', { page: where });
     else if (/aistudio\.google\.com/.test(href)) gtag('event', 'aistudio_click', { page: where });
     else if (/github\.com\/sc0rebreaker/.test(href)) gtag('event', 'github_click', { page: where });
     else if (href === 'key.html' || href === 'download.html' || href === 'install.html') gtag('event', 'guide_click', { page: where, to: href });
