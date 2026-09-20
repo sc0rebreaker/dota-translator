@@ -6,7 +6,10 @@
 <title>Dota Translator - Russian Dota 2 chat, in English, live</title>
 <meta name="description" content="Free live translation of Russian Dota 2 chat. On your screen in 0.2 seconds, in English in about one, for 0.3% of one CPU core.">
 <meta property="og:title" content="They type Russian. You read English.">
+<meta property="og:image" content="https://sc0rebreaker.github.io/dota-translator/logo-512.webp">
 <meta property="og:description" content="Free live translation of Dota 2 chat, right above the game's own.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/webp" href="logo-192.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&display=swap" rel="stylesheet">
@@ -60,7 +63,7 @@
   /* nav */
   nav { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px); background: rgba(10, 13, 16, 0.78); border-bottom: 1px solid var(--line); }
   nav .wrap { display: flex; align-items: center; gap: 28px; height: 62px; }
-  .brand { font-family: var(--serif); font-size: 21px; text-decoration: none; margin-right: auto; white-space: nowrap; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 21px; text-decoration: none; margin-right: auto; white-space: nowrap; }
   .brand b { color: var(--accent); font-weight: 500; font-style: italic; }
   nav a.link { color: var(--dim); text-decoration: none; font-size: 15px; }
   nav a.link:hover { color: var(--text); }
@@ -188,7 +191,7 @@
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top">Dota <b>Translator</b></a>
+    <a class="brand" href="#top"><img src="logo-64.webp" width="30" height="30" alt=""><span>Dota <b>Translator</b></span></a>
     <a class="link" href="#how">How it works</a>
     <a class="link" href="#inside">What it does</a>
     <a class="link" href="#catch">The catch</a>
