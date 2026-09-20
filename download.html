@@ -93,7 +93,6 @@
     <a class="btn" href="key.html">Get the free key</a>
   </div>
   <p class="sub" id="latest" style="font-size:15.5px; margin-top:14px" hidden></p>
-  <p class="sub" id="started" style="font-size:15.5px; margin-top:14px" hidden>Your download is starting. If nothing happens, press the button. Then read on: Windows is about to ask you something.</p>
 
   <section class="step">
     <h2>Windows stops the installer</h2>
@@ -116,7 +115,7 @@
       <figcaption>Drawings, not screenshots: first what you see, then what you see after More info. The exact words differ a little between Windows versions.</figcaption>
     </figure>
     <div class="note"><b>Why it says this.</b> Windows shows this for any program whose maker has not bought a code-signing certificate, which costs a few hundred euros a year - and this app is free. "Unknown publisher" means exactly that: not signed. It does not mean Windows found anything in the file. The whole source is <a href="https://github.com/sc0rebreaker/dota-translator" rel="noopener">public on GitHub</a>, and the installer is built there from that source, not on anybody's PC. Your browser may also ask whether to keep the download, for the same reason.</div>
-    <div class="note"><b>Do not take our word for it.</b> Every release is built by GitHub, in public, from the source at that version: the <a href="https://github.com/sc0rebreaker/dota-translator/actions/workflows/release.yml" rel="noopener">build logs</a> are there to read. Each <a href="https://github.com/sc0rebreaker/dota-translator/releases/latest" rel="noopener">release page</a> lists the installer's SHA-256 fingerprint; compare it with your file in PowerShell: <code>Get-FileHash Dota-Translator-Setup.exe</code>. And GitHub itself signs a statement of which commit the file was built from, which anybody with GitHub's command-line tool can check: <code>gh attestation verify Dota-Translator-Setup.exe --repo sc0rebreaker/dota-translator</code>.</div>
+    <div class="note"><b>Do not take my word for it.</b> Every release is built by GitHub, in public, from the source at that version: the <a href="https://github.com/sc0rebreaker/dota-translator/actions/workflows/release.yml" rel="noopener">build logs</a> are there to read. Each <a href="https://github.com/sc0rebreaker/dota-translator/releases/latest" rel="noopener">release page</a> lists the installer's SHA-256 fingerprint; compare it with your file in PowerShell: <code>Get-FileHash Dota-Translator-Setup.exe</code>. And GitHub itself signs a statement of which commit the file was built from, which anybody with GitHub's command-line tool can check: <code>gh attestation verify Dota-Translator-Setup.exe --repo sc0rebreaker/dota-translator</code>.</div>
   </section>
 
   <section class="step">
@@ -152,14 +151,8 @@
     el.textContent = "Latest version: " + rel.tag_name.replace(/^v/, "") + ", released " + new Date(rel.published_at).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }) + ". The installed app shows its version in its settings window and on its tray icon, and updates itself.";
     el.hidden = false;
   }).catch(function () {});
-  // Arrived from a download button (download.html#start): start it, once.
-  // A plain visit to this page downloads nothing until the button is pressed.
-  if (location.hash === "#start") {
-    window.dtDownloadStarted = true;
-    document.getElementById("started").hidden = false;
-    history.replaceState(null, "", location.pathname);
-    setTimeout(function () { location.href = document.getElementById("dl").href; }, 900);
-  }
+  // Nothing downloads by itself here (the user: "they should have to
+  // manually click"): the button is the only thing that starts it.
 </script>
 </body>
 </html>

@@ -13,10 +13,6 @@
   gtag('js', new Date());
   gtag('config', ID);
 
-  // download.html starts the download itself when it was reached from a
-  // button; it has cleared the #start by now, so it leaves a flag.
-  if (window.dtDownloadStarted) gtag('event', 'download_start');
-
   // What a page view cannot say: did anybody press the button? The
   // download is a link to GitHub, so without this it leaves no trace.
   document.addEventListener('click', function (e) {
@@ -24,10 +20,10 @@
     if (!a) return;
     var href = a.getAttribute('href');
     var where = location.pathname.split('/').pop() || 'index.html';
-    if (href === 'download.html#start' || /Dota-Translator-Setup\.exe$/.test(href)) gtag('event', 'download_click', { page: where, label: a.textContent.trim().slice(0, 40) });
+    if (/Dota-Translator-Setup\.exe$/.test(href)) gtag('event', 'download_click', { page: where, label: a.textContent.trim().slice(0, 40) });
     else if (/aistudio\.google\.com/.test(href)) gtag('event', 'aistudio_click', { page: where });
     else if (/github\.com\/sc0rebreaker/.test(href)) gtag('event', 'github_click', { page: where });
-    else if (href === 'key.html' || href === 'download.html') gtag('event', 'guide_click', { page: where, to: href });
+    else if (href === 'key.html' || href === 'download.html' || href === 'install.html') gtag('event', 'guide_click', { page: where, to: href });
   });
   // The slider in the hero: once per visit, the first time it is moved by hand.
   var slider = document.querySelector('input[type=range]');
