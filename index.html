@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dota Translator - Russian Dota 2 chat, in English, live</title>
+<meta name="description" content="Free live translation of Russian Dota 2 chat. On your screen in 0.2 seconds, in English in about one, for 0.3% of one CPU core.">
+<meta property="og:title" content="They type Russian. You read English.">
+<meta property="og:description" content="Free live translation of Dota 2 chat, right above the game's own.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+  /* One file, no build. Every number on this page is a measurement from
+     CLAUDE.md, and every translation shown is what the model really
+     answered; if one changes there, change it here. No screenshots of the
+     game are used: the scene in the slider is drawn in CSS. */
+  :root {
+    --bg: #0a0d10;
+    --panel: #11161b;
+    --panel-2: #161c22;
+    --line: rgba(200, 215, 230, 0.10);
+    --line-strong: rgba(200, 215, 230, 0.22);
+    --text: #f4f6f8;
+    --dim: rgba(244, 246, 248, 0.68);
+    --faint: #8b95a3;
+    --accent: #f0b44c;
+    --accent-ink: #231703;
+    --good: #7bd88f;
+    --warn: #e58b6b;
+    --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background:
+      radial-gradient(900px 480px at 78% -8%, rgba(240, 180, 76, 0.10), transparent 60%),
+      radial-gradient(700px 420px at 0% 12%, rgba(90, 150, 120, 0.10), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  h1, h2 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.04; text-wrap: balance; }
+  h1 { font-size: clamp(44px, 6.4vw, 78px); }
+  h2 { font-size: clamp(32px, 4vw, 48px); }
+  h1 span, h2 span { color: var(--accent); font-style: italic; }
+  h3 { font-size: 17px; font-weight: 600; }
+  .lead { color: var(--dim); max-width: 640px; margin: 14px auto 0; }
+  .center { text-align: center; }
+
+  /* nav */
+  nav { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px); background: rgba(10, 13, 16, 0.78); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; gap: 28px; height: 62px; }
+  .brand { font-family: var(--serif); font-size: 21px; text-decoration: none; margin-right: auto; white-space: nowrap; }
+  .brand b { color: var(--accent); font-weight: 500; font-style: italic; }
+  nav a.link { color: var(--dim); text-decoration: none; font-size: 15px; }
+  nav a.link:hover { color: var(--text); }
+  .btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 9px; border-radius: 10px; padding: 10px 16px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--line-strong); transition: transform 120ms ease, background 120ms ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.solid { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  .btn.solid:hover { background: #f6c163; }
+  .btn.big { padding: 15px 22px; font-size: 17px; border-radius: 12px; }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+  /* hero */
+  .hero { padding: 72px 0 40px; }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 48px; align-items: center; }
+  .sub { color: var(--dim); font-size: 19px; margin-top: 22px; max-width: 520px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .proofline { margin-top: 22px; color: var(--faint); font-size: 14.5px; }
+  .proofline b { color: var(--text); font-weight: 600; }
+
+  /* the slider: one scene, drawn twice, the top one clipped at the handle */
+  .compare { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line-strong); aspect-ratio: 16 / 10; user-select: none; touch-action: pan-y; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); --at: 34%; }
+  .scene { position: absolute; inset: 0;
+    background:
+      radial-gradient(60% 50% at 70% 30%, rgba(122, 170, 90, 0.55), transparent 70%),
+      radial-gradient(45% 40% at 20% 75%, rgba(70, 120, 95, 0.6), transparent 70%),
+      linear-gradient(115deg, transparent 42%, rgba(120, 190, 215, 0.35) 47%, rgba(120, 190, 215, 0.35) 53%, transparent 58%),
+      linear-gradient(160deg, #24351f, #182a1d 55%, #12201a); }
+  .scene::after { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.55)); }
+  .scene.with { clip-path: inset(0 0 0 var(--at)); }
+  .tagline { position: absolute; top: 14px; z-index: 3; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 9px; border-radius: 7px; background: rgba(0, 0, 0, 0.55); color: var(--dim); }
+  .tagline.l { left: 14px; }
+  .tagline.r { right: 14px; color: var(--accent); }
+  .hud { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 46%; height: 13%; z-index: 2; background: linear-gradient(#20262d, #12161a); border: 1px solid rgba(255, 255, 255, 0.08); border-bottom: 0; border-radius: 8px 8px 0 0; }
+  .hud::before { content: ''; position: absolute; left: 6%; right: 6%; top: 52%; height: 16%; border-radius: 3px; background: linear-gradient(90deg, #3fae4f 0 72%, #173a1d 72%); box-shadow: 0 12px 0 #2f6fd0; }
+  .chat { position: absolute; left: 4%; right: 2%; bottom: 17%; z-index: 2; font-weight: 700; font-size: clamp(10.5px, 1.2vw, 14px); line-height: 1.55; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 2px 3px rgba(0, 0, 0, 0.9); white-space: nowrap; }
+  .chat .row { display: flex; align-items: center; gap: 0.45em; }
+  .chat .face { width: 2.1em; height: 1.25em; border-radius: 2px; flex: none; border: 1px solid rgba(0, 0, 0, 0.6); }
+  .chat .pad { width: 2.1em; flex: none; }
+  .chat .gap { height: 0.9em; }
+  .chat .o { font-weight: 400; color: rgba(232, 230, 223, 0.78); font-size: 0.86em; }
+  .c0 { color: #3375FF; } .c2 { color: #d64fd6; } .c3 { color: #F3F00B; } .c4 { color: #FF6B00; }
+  .f0 { background: linear-gradient(135deg, #2b5fd0, #7fb2ff); } .f2 { background: linear-gradient(135deg, #7a1f7a, #e27be2); }
+  .f3 { background: linear-gradient(135deg, #8a8606, #f3f00b); } .f4 { background: linear-gradient(135deg, #a13f00, #ffa45e); }
+  .handle { position: absolute; top: 0; bottom: 0; left: var(--at); width: 2px; background: var(--accent); z-index: 4; transform: translateX(-1px); }
+  .handle::after { content: '\2194'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: 19px; font-weight: 700; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5); }
+  .compare input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 5; margin: 0; }
+  .compare:focus-within .handle::after { outline: 3px solid rgba(240, 180, 76, 0.45); }
+  .caption { margin-top: 12px; color: var(--faint); font-size: 14px; text-align: center; }
+
+  /* sections */
+  section { padding: 84px 0; }
+  .band { background: linear-gradient(var(--panel), var(--bg)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .window { margin: 38px auto 0; max-width: 900px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--panel); overflow: hidden; text-align: left; }
+  .window-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
+  .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: #2b333c; }
+  .window-bar .r { margin-left: auto; color: var(--accent); }
+  .numbers { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .numbers div { padding: 26px 22px; border-right: 1px solid var(--line); }
+  .numbers div:last-child { border-right: 0; }
+  .numbers em { font-style: normal; color: var(--faint); font-size: 13px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .numbers b { display: block; font-family: var(--serif); font-weight: 500; font-size: 44px; line-height: 1.1; margin: 8px 0 4px; }
+  .numbers b.a { color: var(--accent); }
+  .numbers span { color: var(--dim); font-size: 14.5px; }
+  .window-foot { padding: 13px 22px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14.5px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; text-align: left; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .card p { color: var(--dim); font-size: 15.5px; margin-top: 8px; }
+  .card .ex { margin-top: 12px; font-family: var(--mono); font-size: 13px; color: var(--faint); }
+  .card .ex b { color: var(--good); font-weight: 500; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; text-align: left; counter-reset: s; }
+  .step { counter-increment: s; border: 1px solid var(--line); border-radius: 14px; padding: 22px; background: var(--panel-2); }
+  .step::before { content: counter(s); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 15px; margin-bottom: 14px; }
+  .step p { color: var(--dim); font-size: 15.5px; margin-top: 8px; }
+  code { font-family: var(--mono); font-size: 0.88em; background: rgba(255, 255, 255, 0.07); padding: 2px 6px; border-radius: 5px; }
+
+  .catch { border: 1px solid rgba(229, 139, 107, 0.35); background: linear-gradient(rgba(229, 139, 107, 0.07), transparent); border-radius: 18px; padding: 40px; max-width: 900px; margin: 0 auto; }
+  .catch h2 span { color: var(--warn); }
+  .catch ul { list-style: none; margin-top: 22px; display: grid; gap: 12px; }
+  .catch li { padding-left: 26px; position: relative; color: var(--dim); }
+  .catch li::before { content: ''; position: absolute; left: 4px; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--warn); }
+  .catch li b { color: var(--text); font-weight: 600; }
+  .catch .bottom { margin-top: 24px; font-weight: 600; }
+
+  .faq { max-width: 780px; margin: 34px auto 0; text-align: left; }
+  details { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; list-style: none; padding: 18px 28px 18px 0; font-weight: 600; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 4px; top: 14px; font-size: 24px; font-weight: 400; color: var(--accent); }
+  details[open] summary::after { content: '\2013'; }
+  details p { color: var(--dim); padding: 0 0 20px; }
+
+  .end { text-align: center; padding: 96px 0 72px; }
+  .end .cta { justify-content: center; }
+  footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--faint); font-size: 13.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+  @media (max-width: 900px) {
+    .hero { padding-top: 44px; }
+    .hero .wrap { grid-template-columns: 1fr; gap: 34px; }
+    .cards, .steps { grid-template-columns: 1fr; }
+    .numbers { grid-template-columns: 1fr 1fr; }
+    .numbers div:nth-child(2) { border-right: 0; }
+    .numbers div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    nav a.link { display: none; }
+    nav .wrap { gap: 12px; }
+    nav .btn { padding: 8px 13px; }
+    h1 { font-size: clamp(38px, 11vw, 60px); }
+    .btn.big { width: 100%; justify-content: center; }
+    section { padding: 60px 0; }
+    .catch { padding: 28px 22px; }
+    .chat { font-size: clamp(9px, 2.5vw, 14px); left: 3%; }
+    .compare { aspect-ratio: 1 / 1; }
+    .tagline { font-size: 10px; padding: 4px 7px; top: 10px; }
+    .tagline .long, .chat .o { display: none; }
+    .handle::after { width: 34px; height: 34px; font-size: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">Dota <b>Translator</b></a>
+    <a class="link" href="#how">How it works</a>
+    <a class="link" href="#inside">What it does</a>
+    <a class="link" href="#catch">The catch</a>
+    <a class="link" href="#faq">Questions</a>
+    <a class="btn solid" href="https://github.com/KristjanRanna/dota-translator">Get it free</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <h1>They type Russian.<br>You read <span>English.</span></h1>
+      <p class="sub">Live translation of Dota 2 chat, right above the game's own. A line is on your screen the moment it is said, and in English about a second later.</p>
+      <div class="cta">
+        <a class="btn solid big" href="https://github.com/KristjanRanna/dota-translator">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          Get it free on GitHub
+        </a>
+        <a class="btn big" href="#how">See how it works &darr;</a>
+      </div>
+      <p class="proofline"><b>0.2s</b> to appear &middot; <b>~1s</b> to English &middot; <b>0.3%</b> of one CPU core &middot; free, on your own key</p>
+    </div>
+
+    <div>
+      <div class="compare" id="compare">
+        <!-- without: the game's chat as it is -->
+        <div class="scene">
+          <div class="hud"></div>
+          <div class="chat">
+            <div class="row"><span class="face f4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
+            <div class="row"><span class="face f2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
+            <div class="row"><span class="face f3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
+            <div class="row"><span class="face f0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
+          </div>
+        </div>
+        <!-- with: the same, and the English above it -->
+        <div class="scene with">
+          <div class="hud"></div>
+          <div class="chat">
+            <div class="row"><span class="pad"></span><span>[Allies]</span><span class="c4">Иван:</span><span>he has bkb, don't go in</span><span class="o">(у него бкб, не лезь)</span></div>
+            <div class="row"><span class="pad"></span><span class="c2">&nbsp;Луиза:</span><span>gg wp, well played</span><span class="o">(гг вп, вы молодцы)</span></div>
+            <div class="row"><span class="pad"></span><span>[Allies]</span><span class="c3">Дима:</span><span>group up everyone, push mid</span><span class="o">(собираемся все, пушим мид)</span></div>
+            <div class="row"><span class="pad"></span><span>[Allies]</span><span class="c0">Саня:</span><span>have buyback? then let's go highground</span></div>
+            <div class="gap"></div>
+            <div class="row"><span class="face f4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
+            <div class="row"><span class="face f2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
+            <div class="row"><span class="face f3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
+            <div class="row"><span class="face f0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
+          </div>
+        </div>
+        <span class="tagline l">Without</span>
+        <span class="tagline r">With<span class="long"> Dota Translator</span></span>
+        <div class="handle" aria-hidden="true"></div>
+        <input type="range" min="0" max="100" value="34" aria-label="Drag to compare the chat without and with the translator">
+      </div>
+      <p class="caption">Drag the handle. Same chat, same moment.</p>
+    </div>
+  </div>
+</header>
+
+<section class="center">
+  <div class="wrap">
+    <h2>Fast enough for a <span>fight</span></h2>
+    <p class="lead">A translation that arrives after the fight is a translation you never read. These are measurements from live matches, not estimates.</p>
+    <div class="window">
+      <div class="window-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>dota-translator / measured</span><span class="r">45 lines, team and all chat</span></div>
+      <div class="numbers">
+        <div><em>On your screen</em><b>0.2s</b><span>after the line is said</span></div>
+        <div><em>In English</em><b class="a">~1.1s</b><span>never more than 1.4 in a normal chat</span></div>
+        <div><em>CPU while you play</em><b>0.3%</b><span>of one core. It reads a few kilobytes</span></div>
+        <div><em>Price</em><b class="a">&euro;0</b><span>no account, no subscription</span></div>
+      </div>
+      <div class="window-foot">Every line found: 45 of 45. A line somebody already said comes back instantly, with no call at all.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band center" id="inside">
+  <div class="wrap">
+    <h2>Built for how people <span>actually</span> type</h2>
+    <div class="cards">
+      <div class="card"><h3>Slang stays slang</h3><p>It is told it is reading Dota chat. Shorthand comes out as shorthand, not as an essay.</p><p class="ex">го рошан &rarr; <b>let's rosh</b><br>мид сс, осторожно &rarr; <b>mid miss, careful</b></p></div>
+      <div class="card"><h3>Nothing softened</h3><p>An insult is translated as an insult. What was said is the thing you asked for.</p><p class="ex">ты вообще играть умеешь? &rarr; <b>do you even know how to play?</b></p></div>
+      <div class="card"><h3>Team and all chat</h3><p>Both channels, tagged as the game tags them, with each player's own colour on their name.</p></div>
+      <div class="card"><h3>Only what you can't read</h3><p>English lines and the chat wheel are left alone and cost nothing. You see <code>english (what was said)</code>, so a bad translation never hides the original.</p></div>
+      <div class="card"><h3>It looks like Dota</h3><p>Same typeface as the game's chat, lined up with it, gone when the game's own line goes. Alt-tab and it gets out of the way.</p></div>
+      <div class="card"><h3>Yours, not ours</h3><p>There is no server. It runs on your PC with your own free Gemini key. Your chat goes to Google to be translated, and nowhere else.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="center" id="how">
+  <div class="wrap">
+    <h2>Three steps, <span>ten minutes</span></h2>
+    <div class="steps">
+      <div class="step"><h3>Get a free Gemini key</h3><p>From Google AI Studio. The free tier is plenty for Dota chat. Use a project with no billing set up.</p></div>
+      <div class="step"><h3>Run Dota borderless</h3><p>Settings, Video, Display Mode: <b>Borderless Window</b>. Nothing can be drawn over an exclusive fullscreen game.</p></div>
+      <div class="step"><h3>Start it</h3><p>Paste the key into <code>config.json</code>, then <code>npm install</code> and <code>npm start</code>. It finds the chat by itself when a match loads.</p></div>
+    </div>
+    <p class="lead" style="margin-top:26px">Windows only. <code>Alt+D</code> hides it, <code>Alt+Shift+D</code> quits.</p>
+  </div>
+</section>
+
+<section id="catch">
+  <div class="wrap">
+    <div class="catch">
+      <h2>The <span>catch</span>, up front</h2>
+      <ul>
+        <li><b>It reads Dota's memory.</b> Read-only: it never writes to the game, injects nothing and touches none of its files. You can check: the reader is one plain-text file.</li>
+        <li><b>Valve has never said whether that is allowed.</b> It was asked directly in 2024 and the question was closed without an answer.</li>
+        <li><b>No documented ban is not the same as safe.</b> Nobody has reported a VAC ban for read-only access. That is a weaker claim than "it is fine", and it is the only one anybody can honestly make.</li>
+        <li><b>Think Overplus, not Overwolf.</b> Unsanctioned, widely used, works anyway, and its users accept the risk.</li>
+        <li><b>A Dota patch can break it</b> until it is updated. It is built to fall back to a slower way of reading chat when that happens, rather than going dark.</li>
+      </ul>
+      <p class="bottom">Use it at your own risk, and not on an account you would mind losing.</p>
+    </div>
+  </div>
+</section>
+
+<section class="center" id="faq" style="padding-top:20px">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>Is it really free?</summary><p>Yes. No subscription, no account, no trial. It uses your own Gemini key, and Google's free tier covers normal play: only lines you can't read are sent, busy moments share one request, and repeats cost nothing.</p></details>
+      <details><summary>Will it slow my game down?</summary><p>It should not. It reads the game's own chat list - a few kilobytes, four times a second - which measures at 0.3% of one CPU core. The one heavier moment is when it first finds that list in a match: about ten seconds of reading, at low priority, once.</p></details>
+      <details><summary>Can I get banned?</summary><p>Nobody can promise you won't. See <a href="#catch">the catch</a>: it is read-only and no ban for that has been documented, but Valve has not approved it and the Steam agreement covers any third-party tool.</p></details>
+      <details><summary>Where does my chat go?</summary><p>The lines that need translating go to Google's Gemini API under your own key. There is no server of ours in between, nothing is logged or collected, and English lines never leave your PC.</p></details>
+      <details><summary>Only Russian?</summary><p>Russian is what it is built and tuned for. Greek, Chinese, Korean, Arabic and Thai can be switched on in the settings; the quality there is less tested.</p></details>
+      <details><summary>Is it open source?</summary><p>The source is public and free to use, read and change for non-commercial purposes (PolyForm Noncommercial). Strictly that makes it source-available rather than open source: a paid product may not bundle it.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="wrap">
+    <h2>Read your team.<br><span>Win the fight.</span></h2>
+    <div class="cta">
+      <a class="btn solid big" href="https://github.com/KristjanRanna/dota-translator">Get it free on GitHub</a>
+      <a class="btn big" href="https://github.com/KristjanRanna/dota-translator#setup">Setup guide</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Dota Translator is a fan project. Not affiliated with or endorsed by Valve. Dota 2 is a trademark of Valve Corporation.</span>
+    <span>PolyForm Noncommercial 1.0.0</span>
+  </div>
+</footer>
+
+<script>
+  // The slider. A range input does the work, so it is draggable, tappable
+  // and keyboard-operable without any of that being written here.
+  const box = document.getElementById('compare');
+  const range = box.querySelector('input');
+  const set = (v) => box.style.setProperty('--at', v + '%');
+  range.addEventListener('input', () => { moved = true; set(range.value); });
+  set(range.value);
+
+  // Until somebody touches it, it sways once to say that it moves.
+  let moved = false;
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let t0 = 0;
+    const sway = (t) => {
+      if (!t0) t0 = t;
+      if (moved) return;
+      const s = (t - t0) / 1000;
+      if (s > 4.2) { range.value = 34; set(34); return; }
+      const v = 34 + 30 * Math.sin(s * 1.5) * Math.exp(-s * 0.35);
+      range.value = v; set(v);
+      requestAnimationFrame(sway);
+    };
+    setTimeout(() => requestAnimationFrame(sway), 900);
+  }
+</script>
+</body>
+</html>
