@@ -88,6 +88,18 @@
   .field span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .editor { background: #0f1317; color: #d7dde5; font-family: var(--mono); font-size: 13.5px; line-height: 1.7; padding: 16px 18px; white-space: pre; overflow-x: auto; }
   .editor .k { color: #8ab4f8; } .editor .s { color: #a5d6a7; } .editor .hl { background: rgba(240, 180, 76, 0.18); outline: 1px solid rgba(240, 180, 76, 0.6); border-radius: 4px; padding: 1px 3px; color: #ffe2a8; }
+  /* the app's own window, drawn */
+  .shot.appwin { background: #0a0d10; color: #f4f6f8; }
+  .bar.dark { background: #1a1f25; border-bottom-color: #2a313a; }
+  .bar.dark .url { background: transparent; color: #aab3bf; font-family: var(--sans); }
+  .bar.dark i { background: #3a424d; }
+  .appbody { padding: 22px 26px 26px; display: grid; gap: 12px; font-size: 14px; }
+  .apptitle { font-family: var(--serif); font-size: 24px; } .apptitle em { color: var(--accent); }
+  .applabel { font-weight: 600; font-size: 13px; margin-top: 4px; }
+  .appfield { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #11161b; border: 1px solid var(--accent); border-radius: 10px; padding: 10px 14px; font-family: var(--mono); letter-spacing: 1px; color: #d7dde5; }
+  .appghost { font-family: var(--sans); letter-spacing: 0; font-weight: 600; font-size: 13px; color: #f4f6f8; border: 1px solid rgba(200, 215, 230, 0.24); border-radius: 8px; padding: 5px 10px; }
+  .appok { border: 1px solid rgba(200, 215, 230, 0.24); border-left: 3px solid var(--good); background: rgba(123, 216, 143, 0.07); border-radius: 10px; padding: 10px 13px; color: #d7dde5; }
+  .appbtn { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 10px; padding: 10px 18px; }
   .tab { background: #1a2027; color: #aab3bf; font-family: var(--mono); font-size: 12px; padding: 7px 14px; border-bottom: 1px solid #242b33; }
 
   .note { margin-top: 18px; border: 1px solid var(--line-strong); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 16px; color: var(--dim); background: var(--panel); font-size: 15.5px; }
@@ -204,27 +216,28 @@
   </section>
 
   <section class="step">
-    <h2>Paste it into <code>config.json</code></h2>
-    <p>In the Dota Translator folder, copy <code>config.example.json</code> to <code>config.json</code>, open it in Notepad, and put the key between the quotes after <code>geminiApiKey</code>. Save.</p>
+    <h2>Paste it into Dota Translator</h2>
+    <p>Start Dota Translator. The first time, it opens a window asking for the key. Paste it in and press <b>Check and save</b>.</p>
     <figure>
-      <div class="shot" style="background:#0f1317">
-        <div class="tab">config.json</div>
-        <div class="editor">{
-  <span class="k">"geminiApiKey"</span>: <span class="s">"<span class="hl">paste-your-key-here</span>"</span>,
-  <span class="k">"model"</span>: <span class="s">"gemini-3.5-flash-lite"</span>,
-  <span class="k">"display"</span>: <span class="s">"above"</span>,
-  ...
-}</div>
+      <div class="shot appwin">
+        <div class="bar dark"><i></i><i></i><i></i><div class="url">Dota Translator</div></div>
+        <div class="appbody">
+          <div class="apptitle">One thing first: <em>your key</em></div>
+          <div class="applabel">Your Gemini key</div>
+          <div class="appfield here sq"><span>&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span><span class="appghost">Show</span></div>
+          <div class="appok"><b>It works.</b> Google translated <code>гг вп</code> as <code>gg wp</code>. Saved.</div>
+          <div><span class="appbtn here">Check and save</span></div>
+        </div>
       </div>
-      <figcaption>Keep the quotes and the comma. Only the highlighted part changes.</figcaption>
+      <figcaption>Drawing of the app's own window. It tries your key with one real translation before saving, so you know at once whether it works - and if not, it says why in plain words.</figcaption>
     </figure>
-    <p><code>config.json</code> stays on your PC: the project is set up so that file is never uploaded anywhere. If you would rather not write the key to disk at all, set it as the environment variable <code>GEMINI_API_KEY</code> instead; that wins over the file.</p>
+    <p>The key is saved on your PC only, encrypted by Windows for your user, and is sent to Google and nobody else. To change it later, click the Dota Translator icon in the system tray, by the clock.</p>
+    <p>Rather use a file? Put it in <code>config.json</code> as <code>geminiApiKey</code>, or set the environment variable <code>GEMINI_API_KEY</code>, which never touches the disk.</p>
   </section>
 
   <section class="step">
-    <h2>Start it</h2>
-    <p>Run <code>npm start</code>, load into a match, and have somebody type in Russian. The line appears above Dota's chat at once and turns into English about a second later. If the key is wrong, the overlay says so in words rather than sitting there silent.</p>
-    <p>Want to check the key without a game? <code>npm run watch</code> runs the same thing in a terminal and prints every step.</p>
+    <h2>Play</h2>
+    <p>Load into a match and have somebody type in Russian. The line appears above Dota's chat at once and turns into English about a second later. Dota has to be in <b>Borderless Window</b> mode (Settings, Video) for anything to be drawn over it.</p>
   </section>
 
   <section class="trouble">
@@ -232,7 +245,7 @@
     <details><summary>"prepayment credits are depleted"</summary><p>The key belongs to a project with billing switched on and no credit left. Make a new key in a project that has no billing account (step 2). The free tier is plenty for Dota chat.</p></details>
     <details><summary>"Your project has been denied access" (403)</summary><p>This has happened with a brand-new project that otherwise looked fine: it would list the models and refuse every request. Create the key in a different project and it works.</p></details>
     <details><summary>"You exceeded your current quota"</summary><p>The free tier allows about 15 requests a minute. Dota Translator counts its own requests and, when chat gets busy, sends several lines in one - so this should only appear if the same key is being used by something else at the same time.</p></details>
-    <details><summary>"API key not valid"</summary><p>Usually a stray space or a missing quote in <code>config.json</code>. Copy the key again with the Copy button rather than by selecting it, and check the line still ends with <code>",</code>.</p></details>
+    <details><summary>"Google does not recognise this key"</summary><p>Usually a character lost while copying. Copy the key again with the Copy button in AI Studio rather than by selecting it, and paste it again.</p></details>
     <details><summary>Does Google see my chat?</summary><p>The lines that need translating are sent to Google's Gemini API under your key, and that is all that is sent: no account name, no match, and nothing that was already in English. Google's terms for the free tier apply to what it does with them.</p></details>
   </section>
 
