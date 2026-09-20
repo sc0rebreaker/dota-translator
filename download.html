@@ -116,6 +116,7 @@
       <figcaption>Drawings, not screenshots: first what you see, then what you see after More info. The exact words differ a little between Windows versions.</figcaption>
     </figure>
     <div class="note"><b>Why it says this.</b> Windows shows this for any program whose maker has not bought a code-signing certificate, which costs a few hundred euros a year - and this app is free. "Unknown publisher" means exactly that: not signed. It does not mean Windows found anything in the file. The whole source is <a href="https://github.com/sc0rebreaker/dota-translator" rel="noopener">public on GitHub</a>, and the installer is built there from that source, not on anybody's PC. Your browser may also ask whether to keep the download, for the same reason.</div>
+    <div class="note"><b>Do not take our word for it.</b> Every release is built by GitHub, in public, from the source at that version: the <a href="https://github.com/sc0rebreaker/dota-translator/actions/workflows/release.yml" rel="noopener">build logs</a> are there to read. Each <a href="https://github.com/sc0rebreaker/dota-translator/releases/latest" rel="noopener">release page</a> lists the installer's SHA-256 fingerprint; compare it with your file in PowerShell: <code>Get-FileHash Dota-Translator-Setup.exe</code>. And GitHub itself signs a statement of which commit the file was built from, which anybody with GitHub's command-line tool can check: <code>gh attestation verify Dota-Translator-Setup.exe --repo sc0rebreaker/dota-translator</code>.</div>
   </section>
 
   <section class="step">
