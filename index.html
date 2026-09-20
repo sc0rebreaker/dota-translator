@@ -14,7 +14,9 @@
   /* One file, no build. Every number on this page is a measurement from
      CLAUDE.md, and every translation shown is what the model really
      answered; if one changes there, change it here. No screenshots of the
-     game are used: the scene in the slider is drawn in CSS. */
+     game are used: the scene in the slider is drawn in CSS. The hero
+     portraits are LINKED from Valve's own image server, as the app itself
+     does - none of them is in this repo, and none should be. */
   :root {
     --bg: #0a0d10;
     --panel: #11161b;
@@ -94,8 +96,10 @@
   .hud::before { content: ''; position: absolute; left: 6%; right: 6%; top: 52%; height: 16%; border-radius: 3px; background: linear-gradient(90deg, #3fae4f 0 72%, #173a1d 72%); box-shadow: 0 12px 0 #2f6fd0; }
   .chat { position: absolute; left: 4%; right: 2%; bottom: 17%; z-index: 2; font-weight: 700; font-size: clamp(10.5px, 1.2vw, 14px); line-height: 1.55; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 2px 3px rgba(0, 0, 0, 0.9); white-space: nowrap; }
   .chat .row { display: flex; align-items: center; gap: 0.45em; }
-  .chat .face { width: 2.1em; height: 1.25em; border-radius: 2px; flex: none; border: 1px solid rgba(0, 0, 0, 0.6); }
-  .chat .pad { width: 2.1em; flex: none; }
+  /* A hero portrait, as the game's chat has. The coloured block behind it
+     is what shows if the picture does not load. */
+  .chat .face { width: 2.2em; aspect-ratio: 16 / 9; border-radius: 2px; flex: none; border: 1px solid rgba(0, 0, 0, 0.7); overflow: hidden; }
+  .chat .face img { width: 100%; height: 100%; display: block; object-fit: cover; }
   .chat .gap { height: 0.9em; }
   .chat .o { font-weight: 400; color: rgba(232, 230, 223, 0.78); font-size: 0.86em; }
   .c0 { color: #3375FF; } .c2 { color: #d64fd6; } .c3 { color: #F3F00B; } .c4 { color: #FF6B00; }
@@ -213,25 +217,25 @@
         <div class="scene">
           <div class="hud"></div>
           <div class="chat">
-            <div class="row"><span class="face f4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
-            <div class="row"><span class="face f2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
-            <div class="row"><span class="face f3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
-            <div class="row"><span class="face f0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
           </div>
         </div>
         <!-- with: the same, and the English above it -->
         <div class="scene with">
           <div class="hud"></div>
           <div class="chat">
-            <div class="row"><span class="pad"></span><span>[Allies]</span><span class="c4">Иван:</span><span>he has bkb, don't go in</span><span class="o">(у него бкб, не лезь)</span></div>
-            <div class="row"><span class="pad"></span><span class="c2">&nbsp;Луиза:</span><span>gg wp, well played</span><span class="o">(гг вп, вы молодцы)</span></div>
-            <div class="row"><span class="pad"></span><span>[Allies]</span><span class="c3">Дима:</span><span>group up everyone, push mid</span><span class="o">(собираемся все, пушим мид)</span></div>
-            <div class="row"><span class="pad"></span><span>[Allies]</span><span class="c0">Саня:</span><span>have buyback? then let's go highground</span></div>
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>he has bkb, don't go in</span><span class="o">(у него бкб, не лезь)</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Луиза:</span><span>gg wp, well played</span><span class="o">(гг вп, вы молодцы)</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>group up everyone, push mid</span><span class="o">(собираемся все, пушим мид)</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>have buyback? then let's go highground</span></div>
             <div class="gap"></div>
-            <div class="row"><span class="face f4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
-            <div class="row"><span class="face f2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
-            <div class="row"><span class="face f3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
-            <div class="row"><span class="face f0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
           </div>
         </div>
         <span class="tagline l">Without</span>
@@ -342,6 +346,21 @@
   const set = (v) => box.style.setProperty('--at', v + '%');
   range.addEventListener('input', () => { moved = true; set(range.value); });
   set(range.value);
+
+  // A hero for each of the four players, different on every visit, and
+  // the same one for a player on both sides of the handle.
+  const HEROES = ['juggernaut', 'pudge', 'lina', 'crystal_maiden', 'axe', 'invoker', 'sniper', 'furion', 'centaur', 'lion', 'mirana', 'earthshaker', 'phantom_assassin', 'zuus', 'windrunner', 'tiny'];
+  const picked = HEROES.map((h) => [Math.random(), h]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+  const byPlayer = {};
+  for (const face of box.querySelectorAll('.face[data-player]')) {
+    const p = face.dataset.player;
+    byPlayer[p] = byPlayer[p] || picked.pop();
+    const img = new Image();
+    img.alt = '';
+    img.onerror = () => img.remove();
+    img.src = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/' + byPlayer[p] + '.png';
+    face.appendChild(img);
+  }
 
   // Until somebody touches it, it sways once to say that it moves.
   let moved = false;
