@@ -137,6 +137,7 @@
   .step { counter-increment: s; border: 1px solid var(--line); border-radius: 14px; padding: 22px; background: var(--panel-2); }
   .step::before { content: counter(s); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 15px; margin-bottom: 14px; }
   .step p { color: var(--dim); font-size: 15.5px; margin-top: 8px; }
+  .step a { color: var(--accent); white-space: nowrap; }
   code { font-family: var(--mono); font-size: 0.88em; background: rgba(255, 255, 255, 0.07); padding: 2px 6px; border-radius: 5px; }
 
   .catch { border: 1px solid rgba(229, 139, 107, 0.35); background: linear-gradient(rgba(229, 139, 107, 0.07), transparent); border-radius: 18px; padding: 40px; max-width: 900px; margin: 0 auto; }
@@ -283,8 +284,8 @@
   <div class="wrap">
     <h2>Three steps, <span>ten minutes</span></h2>
     <div class="steps">
-      <div class="step"><h3>Get a free Gemini key</h3><p>From Google AI Studio. The free tier is plenty for Dota chat. Use a project with no billing set up.</p></div>
-      <div class="step"><h3>Run Dota borderless</h3><p>Settings, Video, Display Mode: <b>Borderless Window</b>. Nothing can be drawn over an exclusive fullscreen game.</p></div>
+      <div class="step"><h3>Get a free Gemini key</h3><p>From Google AI Studio: two minutes, no card. The free tier is plenty for Dota chat. <a href="key.html">Step by step, with pictures &rarr;</a></p></div>
+      <div class="step"><h3>Run Dota borderless</h3><p>Settings, Video, Display Mode: <b>Borderless Window</b>. The translation is a window drawn over the game, and an exclusive-fullscreen game does not let other windows on top of it.</p></div>
       <div class="step"><h3>Start it</h3><p>Paste the key into <code>config.json</code>, then <code>npm install</code> and <code>npm start</code>. It finds the chat by itself when a match loads.</p></div>
     </div>
     <p class="lead" style="margin-top:26px">Windows only. <code>Alt+D</code> hides it, <code>Alt+Shift+D</code> quits.</p>
@@ -299,7 +300,7 @@
         <li><b>It reads Dota's memory.</b> Read-only: it never writes to the game, injects nothing and touches none of its files. You can check: the reader is one plain-text file.</li>
         <li><b>Valve has never said whether that is allowed.</b> It was asked directly in 2024 and the question was closed without an answer.</li>
         <li><b>No documented ban is not the same as safe.</b> Nobody has reported a VAC ban for read-only access. That is a weaker claim than "it is fine", and it is the only one anybody can honestly make.</li>
-        <li><b>Think Overplus, not Overwolf.</b> Unsanctioned, widely used, works anyway, and its users accept the risk.</li>
+        <li><b>It is an unsanctioned third-party tool.</b> Not one of the overlays Valve permits: those do not read the game's memory, and this does. Tools like it are widely used and work, and the people using them carry the risk themselves.</li>
         <li><b>A Dota patch can break it</b> until its chat offsets are updated. The app fetches those from this project's GitHub each time it starts, so a fix reaches you without reinstalling anything. It is built to fall back to a slower way of reading chat when that happens, rather than going dark.</li>
       </ul>
       <p class="bottom">Use it at your own risk, and not on an account you would mind losing.</p>

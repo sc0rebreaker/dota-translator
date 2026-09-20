@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get a free Gemini key - Dota Translator</title>
+<meta name="description" content="How to get the free Google Gemini API key that Dota Translator runs on, in about two minutes, with pictures.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+  /* The key guide. Same look as index.html. THE PICTURES ARE DRAWINGS, made
+     here in HTML: a real screenshot of Google AI Studio would show
+     somebody's account and somebody's live key. They follow Google's own
+     description of the flow (ai.google.dev/gemini-api/docs/api-key, read
+     2026-09-20); if Google moves a button, change the drawing AND the
+     words, and the date at the bottom. */
+  :root {
+    --bg: #0a0d10; --panel: #11161b; --panel-2: #161c22;
+    --line: rgba(200, 215, 230, 0.10); --line-strong: rgba(200, 215, 230, 0.22);
+    --text: #f4f6f8; --dim: rgba(244, 246, 248, 0.68); --faint: #8b95a3;
+    --accent: #f0b44c; --accent-ink: #231703; --good: #7bd88f; --warn: #e58b6b;
+    --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: radial-gradient(900px 480px at 78% -8%, rgba(240, 180, 76, 0.10), transparent 60%), var(--bg); color: var(--text); font-family: var(--sans); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  nav { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px); background: rgba(10, 13, 16, 0.78); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; height: 62px; max-width: 1120px; }
+  .brand { font-family: var(--serif); font-size: 21px; text-decoration: none; color: var(--text); margin-right: auto; white-space: nowrap; }
+  .brand b { color: var(--accent); font-weight: 500; font-style: italic; }
+  nav a.back { color: var(--dim); text-decoration: none; font-size: 15px; }
+  h1, h2 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.08; text-wrap: balance; }
+  h1 { font-size: clamp(38px, 5.4vw, 60px); margin-top: 64px; }
+  h1 span { color: var(--accent); font-style: italic; }
+  .sub { color: var(--dim); font-size: 19px; margin-top: 18px; max-width: 640px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .facts span { border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 13px; font-size: 14px; color: var(--dim); }
+  .facts b { color: var(--text); font-weight: 600; }
+
+  .step { margin-top: 64px; counter-increment: s; }
+  body { counter-reset: s; }
+  .step h2 { font-size: clamp(26px, 3.2vw, 34px); display: flex; gap: 14px; align-items: baseline; }
+  .step h2::before { content: counter(s); flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-family: var(--sans); font-weight: 700; font-size: 16px; transform: translateY(-4px); }
+  .step p { color: var(--dim); margin-top: 12px; }
+  .step p b, .step li b { color: var(--text); font-weight: 600; }
+  .step ul { margin: 12px 0 0 22px; color: var(--dim); display: grid; gap: 6px; }
+  code { font-family: var(--mono); font-size: 0.88em; background: rgba(255, 255, 255, 0.07); padding: 2px 6px; border-radius: 5px; color: var(--text); }
+  kbd { font-family: var(--mono); font-size: 0.82em; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; }
+
+  /* the pictures */
+  figure { margin-top: 22px; }
+  figcaption { color: var(--faint); font-size: 13.5px; margin-top: 9px; }
+  .shot { border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; background: #fbfbfd; color: #1f2328; font-size: 14px; line-height: 1.4; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45); }
+  .bar { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #e9ebf0; border-bottom: 1px solid #d5d8df; }
+  .bar i { width: 10px; height: 10px; border-radius: 50%; background: #c3c7d0; flex: none; }
+  .url { flex: 1; background: #fff; border-radius: 999px; padding: 4px 12px; font-family: var(--mono); font-size: 12px; color: #4b5260; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .url b { color: #1f2328; font-weight: 600; }
+  .app { display: grid; grid-template-columns: 170px 1fr; min-height: 250px; }
+  .side { background: #f1f2f6; border-right: 1px solid #e0e3ea; padding: 14px 10px; display: grid; gap: 4px; align-content: start; font-size: 13px; color: #4b5260; }
+  .side .logo { font-weight: 700; color: #1f2328; padding: 4px 8px 10px; }
+  .side span { padding: 6px 8px; border-radius: 7px; }
+  .side .on { background: #dfe6fb; color: #1b3fa8; font-weight: 600; }
+  .main { padding: 18px 20px; position: relative; }
+  .main h4 { font-size: 18px; font-weight: 600; }
+  .rowline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .gbtn { background: #1b5fe0; color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+  .gbtn.ghost { background: #fff; color: #1b5fe0; border: 1px solid #c9d3ea; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+  th { text-align: left; color: #6a7180; font-weight: 500; padding: 7px 8px; border-bottom: 1px solid #e0e3ea; }
+  td { padding: 10px 8px; border-bottom: 1px solid #eceef3; }
+  td.k { font-family: var(--mono); color: #1f2328; }
+  .pill { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 12px; background: #e3f4e7; color: #17692e; font-weight: 600; }
+  /* the ring that says "here" */
+  .here { position: relative; }
+  .here::after { content: ''; position: absolute; inset: -7px -9px; border: 3px solid var(--accent); border-radius: 999px; box-shadow: 0 0 0 4px rgba(240, 180, 76, 0.25); pointer-events: none; }
+  .here.sq::after { border-radius: 10px; }
+  .dialog { margin: 6px auto 0; max-width: 430px; border: 1px solid #d5d8df; border-radius: 14px; padding: 18px; background: #fff; box-shadow: 0 10px 30px rgba(20, 30, 60, 0.18); }
+  .dialog h4 { font-size: 16px; }
+  .dialog p { color: #4b5260; font-size: 13px; margin-top: 6px; }
+  .field { margin-top: 12px; border: 1px solid #c9d3ea; border-radius: 9px; padding: 9px 12px; font-family: var(--mono); font-size: 12.5px; display: flex; justify-content: space-between; gap: 10px; align-items: center; background: #f7f8fb; }
+  .field span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .editor { background: #0f1317; color: #d7dde5; font-family: var(--mono); font-size: 13.5px; line-height: 1.7; padding: 16px 18px; white-space: pre; overflow-x: auto; }
+  .editor .k { color: #8ab4f8; } .editor .s { color: #a5d6a7; } .editor .hl { background: rgba(240, 180, 76, 0.18); outline: 1px solid rgba(240, 180, 76, 0.6); border-radius: 4px; padding: 1px 3px; color: #ffe2a8; }
+  .tab { background: #1a2027; color: #aab3bf; font-family: var(--mono); font-size: 12px; padding: 7px 14px; border-bottom: 1px solid #242b33; }
+
+  .note { margin-top: 18px; border: 1px solid var(--line-strong); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 16px; color: var(--dim); background: var(--panel); font-size: 15.5px; }
+  .note.warn { border-left-color: var(--warn); }
+  .note b { color: var(--text); }
+  .trouble { margin-top: 64px; }
+  .trouble h2 { font-size: clamp(26px, 3.2vw, 34px); }
+  details { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; list-style: none; padding: 16px 28px 16px 0; font-weight: 600; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 4px; top: 12px; font-size: 24px; font-weight: 400; color: var(--accent); }
+  details[open] summary::after { content: '\2013'; }
+  details p { color: var(--dim); padding: 0 0 18px; }
+  .end { margin: 64px 0 40px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { white-space: nowrap; display: inline-flex; align-items: center; border-radius: 12px; padding: 14px 20px; font-weight: 600; font-size: 16px; text-decoration: none; border: 1px solid var(--line-strong); color: var(--text); }
+  .btn.solid { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--faint); font-size: 13.5px; }
+  @media (max-width: 640px) {
+    .app { grid-template-columns: 1fr; } .side { display: none; }
+    h1 { margin-top: 40px; } .step, .trouble { margin-top: 48px; }
+    .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="./">Dota <b>Translator</b></a>
+  <a class="back" href="./">&larr; Back</a>
+</div></nav>
+
+<main class="wrap">
+  <h1>Get your free <span>Gemini key</span></h1>
+  <p class="sub">Dota Translator has no server and no account. The translating is done by Google's Gemini, on a key that is yours. Getting one takes about two minutes and no card.</p>
+  <div class="facts">
+    <span><b>Free</b> - no card asked for</span>
+    <span><b>2 minutes</b></span>
+    <span>You need a <b>Google account</b></span>
+  </div>
+
+  <section class="step">
+    <h2>Open Google AI Studio</h2>
+    <p>Go to <a href="https://aistudio.google.com/apikey" rel="noopener">aistudio.google.com/apikey</a> and sign in with any Google account. The first time, it asks you to accept its terms.</p>
+    <figure>
+      <div class="shot">
+        <div class="bar"><i></i><i></i><i></i><div class="url">https://<b>aistudio.google.com</b>/apikey</div></div>
+        <div class="app">
+          <div class="side"><div class="logo">Google AI Studio</div><span>Chat</span><span>Build</span><span>Dashboard</span><span class="on">&nbsp;&nbsp;API keys</span><span>&nbsp;&nbsp;Projects</span><span>&nbsp;&nbsp;Usage</span></div>
+          <div class="main">
+            <div class="rowline"><h4>API keys</h4><span class="gbtn">Create API key</span></div>
+            <table><tr><th>Key</th><th>Project</th><th>Created</th><th>Plan</th></tr>
+              <tr><td class="k">...x7Qk</td><td>Default Gemini Project</td><td>Today</td><td><span class="pill">Free tier</span></td></tr></table>
+          </div>
+        </div>
+      </div>
+      <figcaption>A drawing of the page, not a screenshot - yours will show your own account. The part that matters is <b>API keys</b>, under Dashboard on the left.</figcaption>
+    </figure>
+  </section>
+
+  <section class="step">
+    <h2>Create a key - or use the one it made you</h2>
+    <p><b>New to AI Studio?</b> Once you accept the terms it makes a project and a key for you, and the key is already in the list. Skip to step 3.</p>
+    <p><b>Otherwise,</b> press <b>Create API key</b>, top right. It asks which project the key belongs to:</p>
+    <ul>
+      <li>Pick (or create) a project that has <b>no billing set up</b>. That is what keeps it on the free tier.</li>
+      <li>Any name will do - "dota" is fine.</li>
+    </ul>
+    <figure>
+      <div class="shot">
+        <div class="bar"><i></i><i></i><i></i><div class="url">https://<b>aistudio.google.com</b>/apikey</div></div>
+        <div class="app">
+          <div class="side"><div class="logo">Google AI Studio</div><span>Chat</span><span>Build</span><span>Dashboard</span><span class="on">&nbsp;&nbsp;API keys</span><span>&nbsp;&nbsp;Projects</span><span>&nbsp;&nbsp;Usage</span></div>
+          <div class="main">
+            <div class="rowline"><h4>API keys</h4><span class="gbtn here">Create API key</span></div>
+            <div class="dialog">
+              <h4>Create a new key</h4>
+              <p>Choose a project for this key.</p>
+              <div class="field here sq"><span>dota &nbsp;-&nbsp; no billing account</span><span>&#9662;</span></div>
+              <div class="rowline" style="margin-top:14px; justify-content:flex-end"><span class="gbtn ghost">Cancel</span><span class="gbtn">Create key</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption>Drawing. The ringed parts: the button, and a project with no billing account.</figcaption>
+    </figure>
+    <div class="note warn"><b>Why no billing?</b> A project with prepaid billing does not fall back to the free tier when its credit runs out - it stops, with "prepayment credits are depleted". A free project never asks for money at all.</div>
+  </section>
+
+  <section class="step">
+    <h2>Copy the key</h2>
+    <p>Click the key in the list and copy it. It is one long line of letters and numbers.</p>
+    <figure>
+      <div class="shot">
+        <div class="bar"><i></i><i></i><i></i><div class="url">https://<b>aistudio.google.com</b>/apikey</div></div>
+        <div class="app">
+          <div class="side"><div class="logo">Google AI Studio</div><span>Chat</span><span>Build</span><span>Dashboard</span><span class="on">&nbsp;&nbsp;API keys</span><span>&nbsp;&nbsp;Projects</span><span>&nbsp;&nbsp;Usage</span></div>
+          <div class="main">
+            <h4>API keys</h4>
+            <div class="dialog">
+              <h4>API key details</h4>
+              <p>Project: dota &nbsp;&middot;&nbsp; <span class="pill">Free tier</span></p>
+              <div class="field"><span>your-key-appears-here-as-one-long-line</span><span class="gbtn here">Copy</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption>Drawing. The key shown is a placeholder, not a real one.</figcaption>
+    </figure>
+    <div class="note"><b>Treat it like a password.</b> Anyone who has it can use up your free quota. Don't post it, don't paste it into a chat, don't put it in a screenshot. If it ever gets out, delete it on the same page and make another - that takes a minute.</div>
+  </section>
+
+  <section class="step">
+    <h2>Paste it into <code>config.json</code></h2>
+    <p>In the Dota Translator folder, copy <code>config.example.json</code> to <code>config.json</code>, open it in Notepad, and put the key between the quotes after <code>geminiApiKey</code>. Save.</p>
+    <figure>
+      <div class="shot" style="background:#0f1317">
+        <div class="tab">config.json</div>
+        <div class="editor">{
+  <span class="k">"geminiApiKey"</span>: <span class="s">"<span class="hl">paste-your-key-here</span>"</span>,
+  <span class="k">"model"</span>: <span class="s">"gemini-3.5-flash-lite"</span>,
+  <span class="k">"display"</span>: <span class="s">"above"</span>,
+  ...
+}</div>
+      </div>
+      <figcaption>Keep the quotes and the comma. Only the highlighted part changes.</figcaption>
+    </figure>
+    <p><code>config.json</code> stays on your PC: the project is set up so that file is never uploaded anywhere. If you would rather not write the key to disk at all, set it as the environment variable <code>GEMINI_API_KEY</code> instead; that wins over the file.</p>
+  </section>
+
+  <section class="step">
+    <h2>Start it</h2>
+    <p>Run <code>npm start</code>, load into a match, and have somebody type in Russian. The line appears above Dota's chat at once and turns into English about a second later. If the key is wrong, the overlay says so in words rather than sitting there silent.</p>
+    <p>Want to check the key without a game? <code>npm run watch</code> runs the same thing in a terminal and prints every step.</p>
+  </section>
+
+  <section class="trouble">
+    <h2>If it does not work</h2>
+    <details><summary>"prepayment credits are depleted"</summary><p>The key belongs to a project with billing switched on and no credit left. Make a new key in a project that has no billing account (step 2). The free tier is plenty for Dota chat.</p></details>
+    <details><summary>"Your project has been denied access" (403)</summary><p>This has happened with a brand-new project that otherwise looked fine: it would list the models and refuse every request. Create the key in a different project and it works.</p></details>
+    <details><summary>"You exceeded your current quota"</summary><p>The free tier allows about 15 requests a minute. Dota Translator counts its own requests and, when chat gets busy, sends several lines in one - so this should only appear if the same key is being used by something else at the same time.</p></details>
+    <details><summary>"API key not valid"</summary><p>Usually a stray space or a missing quote in <code>config.json</code>. Copy the key again with the Copy button rather than by selecting it, and check the line still ends with <code>",</code>.</p></details>
+    <details><summary>Does Google see my chat?</summary><p>The lines that need translating are sent to Google's Gemini API under your key, and that is all that is sent: no account name, no match, and nothing that was already in English. Google's terms for the free tier apply to what it does with them.</p></details>
+  </section>
+
+  <div class="end">
+    <a class="btn solid" href="https://aistudio.google.com/apikey" rel="noopener">Open Google AI Studio</a>
+    <a class="btn" href="./">Back to Dota Translator</a>
+  </div>
+</main>
+
+<footer><div class="wrap">The pictures on this page are illustrations. Google can move things around; this matched Google's own instructions on 20 September 2026. Not affiliated with Google or Valve.</div></footer>
+</body>
+</html>
