@@ -137,6 +137,10 @@
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; text-align: left; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
   .card p { color: var(--dim); font-size: 15.5px; margin-top: 8px; }
+  .lede { max-width: 720px; margin: 14px auto 0; color: var(--dim); font-size: 17px; }
+  .lede b { color: var(--text); }
+  .fine { max-width: 760px; margin: 22px auto 0; color: var(--faint); font-size: 13.5px; }
+  .fine a { color: var(--accent); }
   .card .ex { margin-top: 12px; font-family: var(--mono); font-size: 13px; color: var(--faint); }
   .card .ex b { color: var(--good); font-weight: 500; }
 
@@ -210,7 +214,7 @@
   <div class="wrap">
     <div>
       <h1>They type Russian.<br>You read <span>English.</span></h1>
-      <p class="sub">Live translation of Dota 2 chat, right above the game's own. A line is on your screen the moment it is said, and in English about a second later.</p>
+      <p class="sub">Live translation of Dota 2 chat, right above the game's own. A line is on your screen the moment it is said, and in English about a second later. <b>New:</b> <a href="#back">answer them in Russian</a> without leaving the game's chat.</p>
       <div class="cta">
         <a class="btn solid big" href="download.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4L11 12.2V3zM5 18h14v2H5v-2z"/></svg>
@@ -290,6 +294,19 @@
   </div>
 </section>
 
+<section class="center" id="back">
+  <div class="wrap">
+    <h2>And now you can <span>answer</span></h2>
+    <p class="lede">Type English in Dota's own chat, the way you always do, and press <b>Ctrl+Enter</b> instead of Enter. About a second later it is said - in Russian. Plain Enter still sends exactly what you typed.</p>
+    <div class="cards">
+      <div class="card"><h3>In the language they type in</h3><p>The app reads their chat, so it knows what that is. Russian by default; Chinese if that is what your team writes.</p><p class="ex">buy wards please &rarr; <b>&#1082;&#1091;&#1087;&#1080;&#1090;&#1077; &#1074;&#1072;&#1088;&#1076;&#1099; &#1087;&#1083;&#1079;</b><br>smoke gank mid at 10:30 &rarr; <b>&#1089;&#1084;&#1086;&#1082; &#1074; &#1084;&#1080;&#1076; &#1085;&#1072; 10:30 &#1076;&#1072;&#1074;&#1072;&#1081;</b><br>hi guys, good luck &rarr; <b>&#1087;&#1088;&#1080;&#1074;&#1077;&#1090; &#1074;&#1089;&#1077;&#1084;, &#1091;&#1076;&#1072;&#1095;&#1080;</b></p></div>
+      <div class="card"><h3>Or the other way round</h3><p>One setting turns it into Russian &rarr; English: for the player who types Russian and wants the rest of the team to understand. Same key.</p><p class="ex">&#1075;&#1086; &#1088;&#1086;&#1096;&#1072;&#1085; &#1087;&#1086;&#1089;&#1083;&#1077; &#1076;&#1088;&#1072;&#1082;&#1080; &rarr; <b>rosh after fight</b><br>&#1080;&#1076;&#1091; &#1090;&#1086;&#1087;, &#1087;&#1086;&#1084;&#1086;&#1075;&#1080;&#1090;&#1077; &rarr; <b>going top, help</b></p></div>
+      <div class="card"><h3>The same line every time</h3><p>What you have said once is remembered on your PC: the same English is always the same Russian, at once, at no cost. It is a plain text file, so a friend who speaks the language can correct a line for you.</p></div>
+    </div>
+    <p class="fine">How: the app presses a few keys for you - select, copy, paste, Enter - only when you press Ctrl+Enter and only while Dota is the window in front. Nothing is written to the game. It needs most of a second, so it is for "buy wards", not for a call in the middle of a fight. <a href="#catch">More in the catch.</a></p>
+  </div>
+</section>
+
 <section class="center" id="how">
   <div class="wrap">
     <h2>Three steps, <span>five minutes</span></h2>
@@ -310,6 +327,7 @@
         <li><b>It reads Dota's memory.</b> Read-only: it never writes to the game, injects nothing and touches none of its files. You can check: the reader is one plain-text file.</li>
         <li><b>Valve has never said whether that is allowed.</b> It was asked directly in 2024 and the question was closed without an answer.</li>
         <li><b>No documented ban is not the same as safe.</b> Nobody has reported a VAC ban for read-only access. That is a weaker claim than "it is fine", and it is the only one anybody can honestly make.</li>
+        <li><b>If you use Ctrl+Enter to answer, it presses keys for you.</b> Select, copy, paste and Enter, sent through Windows the way a macro key sends them - once, when you ask, and never unless Dota is in front. That is input, not memory; Valve has said nothing about that either. It can be switched off, and then the app sends the game nothing at all.</li>
         <li><b>It is an unsanctioned third-party tool.</b> Not one of the overlays Valve permits: those do not read the game's memory, and this does. Tools like it are widely used and work, and the people using them carry the risk themselves.</li>
         <li><b>A Dota patch can break it</b> until its chat offsets are updated. The app fetches those from this project's GitHub each time it starts, so a fix reaches you without reinstalling anything. It is built to fall back to a slower way of reading chat when that happens, rather than going dark, and it tells you when it is in that mode.</li>
       </ul>
@@ -324,8 +342,9 @@
     <div class="faq">
       <details><summary>Is it really free?</summary><p>Yes. No subscription, no account, no trial. It uses your own Gemini key, and Google's free tier covers normal play: only lines you can't read are sent, busy moments share one request, and repeats cost nothing. If it wins you a game and you feel like it, you can <a href="https://ko-fi.com/sc0rebreaker" rel="noopener">buy me a coffee on Ko-fi</a> - it changes nothing about what you get.</p></details>
       <details><summary>Will it slow my game down?</summary><p>It should not. It reads the game's own chat list - a few kilobytes, four times a second - which measures at 0.3% of one CPU core. The one heavier moment is when it first finds that list in a match: about ten seconds of reading, at low priority, once.</p></details>
-      <details><summary>Can I get banned?</summary><p>Nobody can promise you won't. See <a href="#catch">the catch</a>: it is read-only and no ban for that has been documented, but Valve has not approved it and the Steam agreement covers any third-party tool.</p></details>
+      <details><summary>Can I get banned?</summary><p>Nobody can promise you won't. See <a href="#catch">the catch</a>: it reads the game's memory and never writes to it, and no ban for that has been documented, but Valve has not approved it and the Steam agreement covers any third-party tool.</p></details>
       <details><summary>Where does my chat go?</summary><p>The lines that need translating go to Google's Gemini API under your own key. There is no server of ours in between, nothing is logged or collected, and English lines never leave your PC. Hero portraits are read from your own Dota install; if one cannot be found there it is fetched from Valve's own image server instead. The only other thing it fetches is one small settings file from this project's GitHub, so that a Dota patch can be fixed without a reinstall.</p></details>
+      <details><summary>Can I answer them in Russian?</summary><p>Yes. Type English in Dota's chat and press Ctrl+Enter instead of Enter: it is sent in the language your teammates have been typing in, about a second later. A setting turns it round (Russian &rarr; English). The translation is a model's, tuned for Dota chat; if a Russian speaker tells you a line is off, <a href="https://github.com/sc0rebreaker/dota-translator/issues" rel="noopener">say so in an issue</a> - that is how it gets better. See <a href="#back">answering</a>.</p></details>
       <details><summary>Only Russian?</summary><p>Russian is what it is built and tuned for. Chinese is translated too, out of the box, because so many of the voice lines people paste into chat are Chinese. Greek, Korean, Arabic and Thai can be switched on in the settings; those are less tested.</p></details>
       <details><summary>Does it update itself?</summary><p>Yes. It looks for a new version when it starts and every few hours after, downloads it quietly, and installs it the next time you close the app - never in the middle of a match. The version you are running is in the tray icon's menu. One catch: a copy older than 0.2.6 only looks when it starts, so if yours has been running for days, quit it from the tray and open it again once.</p></details>
       <details><summary>Can I check what it does?</summary><p>Yes, all of it. The <a href="https://github.com/sc0rebreaker/dota-translator">full source is on GitHub</a>, and the installer is built there from that source by an automated job, in the open, not on somebody's PC. The part that reads the game is one plain-text file, <a href="https://github.com/sc0rebreaker/dota-translator/blob/master/src/memscan.ps1">memscan.ps1</a>; the part that handles your key is <a href="https://github.com/sc0rebreaker/dota-translator/blob/master/src/keycheck.js">keycheck.js</a>.</p></details>
