@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dota Translator - Russian Dota 2 chat, in English, live</title>
-<meta name="description" content="Free live translation of Russian Dota 2 chat. In English about two seconds after it is said, without reading the game's memory.">
+<meta name="description" content="Free live translation of Russian Dota 2 chat. In English about two seconds after it is said, from Dota's own chat feed.">
 <meta property="og:title" content="They type Russian. You read English.">
 <meta property="og:image" content="https://sc0rebreaker.github.io/dota-translator/logo-512.webp">
 <meta property="og:description" content="Free live translation of Dota 2 chat, right above the game's own.">
@@ -239,7 +239,7 @@
   <div class="wrap">
     <div>
       <h1>They type Russian.<br>You read <span>English.</span></h1>
-      <p class="sub">Live translation of Dota 2 chat, right above the game's own. In English about two seconds after it is said - and it does not read the game's memory: Dota sends the chat itself. <b>New:</b> <a href="#back">answer them in Russian</a> without leaving the game's chat.</p>
+      <p class="sub">Live translation of Dota 2 chat, right above the game's own. In English about two seconds after it is said. Dota itself sends the chat to the app, through the feed Valve built for overlays. <b>New:</b> <a href="#back">answer them in Russian</a> without leaving the game's chat.</p>
       <div class="cta">
         <a class="btn solid big" href="download.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4L11 12.2V3zM5 18h14v2H5v-2z"/></svg>
@@ -248,7 +248,7 @@
         <a class="btn big" href="#how">See how it works &darr;</a>
       </div>
       <p class="needs">Free, Windows, 80 MB. It runs on your own <b>free Gemini key</b> - <a href="key.html">getting one takes two minutes</a>.</p>
-      <p class="proofline"><b>~2s</b> to English &middot; <b>no memory reading</b> &middot; free, on your own key</p>
+      <p class="proofline"><b>~2s</b> to English &middot; <b>Dota's own feed</b> &middot; free, on your own key</p>
     </div>
 
     <div>
@@ -335,7 +335,7 @@
       <div class="numbers">
         <div><em>Dota's chat feed</em><b>1&times;/s</b><span>the game sends it once a second</span></div>
         <div><em>Translation</em><b class="a">0.7-0.9s</b><span>every line of a whole matchmade game</span></div>
-        <div><em>Game memory read</em><b>0</b><span>bytes. The game sends the chat itself</span></div>
+        <div><em>Built on</em><b>GSI</b><span>the feed Valve made for overlays and stream tools</span></div>
         <div><em>Price</em><b class="a">&euro;0</b><span>no account, no subscription</span></div>
       </div>
       <div class="window-foot">Said to English: about two seconds. A line somebody already said comes back instantly, with no call at all.</div>
@@ -377,7 +377,6 @@
         <li><b>It does not read Dota's memory.</b> Chat comes from Game State Integration, the feed Valve built into the game for overlays and stream tools: the game sends it to your own PC. The app never opens the game's process, injects nothing and changes none of its files. To switch the feed on it writes one small config file into Dota's folder, and Dota has to be restarted once to notice it.</li>
         <li><b>It looks at two small spots of your screen.</b> The feed says which seat spoke, not which hero. So when somebody new speaks, the app captures the portrait beside the newest chat line - about 56 by 40 pixels - and if that is unclear their tile in the top bar, compares it with the portraits in your own Dota install, and throws it away. Only while Dota is in front; nothing is saved or sent anywhere. It can be switched off, and then other players are shown by colour only.</li>
         <li><b>Other players have no names.</b> The feed does not carry them. You see their hero portrait and their colour - <i>Pink</i>, <i>Teal</i> - which is how most people tell who spoke anyway. Your own lines carry your name.</li>
-        <li><b>It used to read memory, and that is why it was rebuilt.</b> Versions up to 0.3.7 read the chat out of the running game. In February 2023 Valve <a href="https://www.dota2.com/newsentry/3677788723152833273" rel="noopener">banned over 40,000 accounts</a> for cheats that read hidden data from the client, and wrote that any application reading the client can get an account "permanently banned", chat-only or not. No ban was ever reported for this app - but when a player pointed out that the game's own feed carries chat, the memory reader was taken out. It is not in the download.</li>
         <li><b>If you use Ctrl+Enter to answer, it presses keys for you.</b> Select, copy, paste and Enter, sent through Windows the way a macro key sends them - once, when you ask, and never unless Dota is in front. Nothing is written to the game. It can be switched off, and then the app sends the game nothing at all.</li>
         <li><b>Valve has not approved it.</b> It uses Valve's own feed and gives no advantage in the game, but nobody at Valve has reviewed this app, and that is true of every third-party tool you run beside Steam.</li>
         <li><b>A Dota update could change the feed or move the chat</b> on screen. Then the app updates itself; until it does, the text may sit in the wrong place or portraits may be missing. The translations themselves do not depend on either.</li>
@@ -394,7 +393,7 @@
       <details><summary>Is it really free?</summary><p>Yes. No subscription, no account, no trial. It uses your own Gemini key, and Google's free tier covers normal play: only lines you can't read are sent, busy moments share one request, and repeats cost nothing. If it wins you a game and you feel like it, you can <a href="https://ko-fi.com/sc0rebreaker" rel="noopener">buy me a coffee on Ko-fi</a> - it changes nothing about what you get.</p></details>
       <details><summary>Will it slow my game down?</summary><p>It should not. The game sends its chat to the app once a second; the app does not search or read the game at all. When somebody new speaks it compares one thumbnail-sized picture, which takes about 30 milliseconds.</p></details>
       <details><summary>Is the download safe? It is an unsigned .exe from a stranger.</summary><p>Fair. So it is set up to be checked rather than believed: every installer is built by GitHub from the public source, not on my PC; it needs no administrator rights; it talks only to Google, GitHub and Valve's image server; and the fingerprint of each release is published. <a href="download.html#safe">The download page lists all of it</a>, and explains the blue Windows warning, which means "unknown publisher", not "something was found".</p></details>
-      <details><summary>Can I get banned?</summary><p>Nobody can promise anything about somebody else's rules, so here is what it does instead: it does not read or write the game's memory, it injects nothing, and it gets the chat from the feed Valve built for tools like overlays. See <a href="#catch">the catch</a> for the rest - two small screen captures, and key presses if you use Ctrl+Enter. Valve has not reviewed this app.</p></details>
+      <details><summary>Can I get banned?</summary><p>Nobody can promise anything about somebody else's rules, so here is what it does instead: it gets the chat from the feed Valve built into the game for tools like overlays, never touches the game's process and injects nothing. See <a href="#catch">the catch</a> for the rest - two small screen captures, and key presses if you use Ctrl+Enter. Valve has not reviewed this app.</p></details>
       <details><summary>Where does my chat go?</summary><p>The lines that need translating go to Google's Gemini API under your own key. There is no server of ours in between, nothing is logged or collected, and English lines never leave your PC. Hero portraits are read from your own Dota install; if one cannot be found there it is fetched from Valve's own image server instead. The small screen captures never leave your PC and are not saved. The only other thing it fetches is one small settings file from this project's GitHub, so that a change in Dota's chat layout can be fixed without a reinstall.</p></details>
       <details><summary>Can I answer them in Russian?</summary><p>Yes. Type English in Dota's chat and press Ctrl+Enter instead of Enter: it is sent in the language your teammates have been typing in, about a second later. A setting turns it round (Russian &rarr; English). The translation is a model's, tuned for Dota chat; if a Russian speaker tells you a line is off, <a href="https://github.com/sc0rebreaker/dota-translator/issues" rel="noopener">say so in an issue</a> - that is how it gets better. See <a href="#back">answering</a>.</p></details>
       <details><summary>Sometimes lines stay in Russian. Is it broken?</summary><p>Probably not. The translating is done by Google on its free tier, and when that is overloaded it answers slowly or not at all - usually for minutes, now and then for an hour. The app keeps showing every line as soon as it hears it, exactly as it was written, tells you once that Google is not answering, and carries on by itself when it is back. Nothing to restart.</p></details>
