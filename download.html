@@ -64,6 +64,14 @@
   .chev { font-size: 15px; padding: 2px 7px; }
   .note { margin-top: 18px; border: 1px solid var(--line-strong); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 16px; color: var(--dim); background: var(--panel); font-size: 15.5px; }
   .note b { color: var(--text); }
+  .step.plain { counter-increment: none; margin-top: 48px; }
+  .step.plain h2::before { content: none; }
+  .checks { list-style: none; margin-top: 16px; display: grid; gap: 12px; }
+  .checks li { position: relative; padding-left: 30px; color: var(--dim); }
+  .checks li::before { content: ''; position: absolute; left: 4px; top: 0.42em; width: 12px; height: 7px; border-left: 2.5px solid var(--good, #7bd88f); border-bottom: 2.5px solid var(--good, #7bd88f); transform: rotate(-45deg); }
+  .checks b { color: var(--text); }
+  .hash { margin-top: 16px; color: var(--faint); font-size: 14px; }
+  .hash code { word-break: break-all; }
   .end { margin: 64px 0 40px; display: flex; flex-wrap: wrap; gap: 12px; }
   .btn { white-space: nowrap; display: inline-flex; align-items: center; border-radius: 12px; padding: 14px 20px; font-weight: 600; font-size: 16px; text-decoration: none; border: 1px solid var(--line-strong); color: var(--text); }
   .btn.solid { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
@@ -93,6 +101,21 @@
     <a class="btn" href="key.html">Get the free key</a>
   </div>
   <p class="sub" id="latest" style="font-size:15.5px; margin-top:14px" hidden></p>
+
+  <section class="step plain" id="safe">
+    <h2>Is it safe to run?</h2>
+    <p>You do not know me, and it is an .exe. So here is what you can check rather than believe.</p>
+    <ul class="checks">
+      <li><b>Built in public, not on my PC.</b> GitHub builds every installer from the published source, and the <a href="https://github.com/sc0rebreaker/dota-translator/actions/workflows/release.yml" rel="noopener">build logs</a> are there to read. GitHub signs a statement of which source the file came from.</li>
+      <li id="vt" hidden><b>Scanned by about 70 antivirus engines.</b> <a id="vtlink" href="#" rel="noopener">See the VirusTotal report for exactly this file</a>. An unsigned installer sometimes gets one or two false alarms from small engines; the big names are what to look at.</li>
+      <li><b>No administrator rights.</b> It installs for your Windows user only: no service, no driver, nothing that starts with Windows. It uninstalls from Windows Settings like anything else.</li>
+      <li><b>It talks to three places:</b> Google (the chat lines to translate, under your own key), GitHub (updates, and one small settings file), and Valve's image server (a hero portrait, only if it is not found in your own Dota). No server of mine, no account, no tracking in the app.</li>
+      <li><b>It reads Dota and never writes to it.</b> It presses keys for you only when you press Ctrl+Enter in the game's chat. Both parts are one plain-text file each, and automated tests fail if the app ever gains a way to write to the game. <a href="./#catch">What that means for your account is in the catch.</a></li>
+      <li><b>Code scanning and dependency alerts are on.</b> GitHub's scanner reads the code on every change, and watches the packages it is built from.</li>
+    </ul>
+    <p class="hash" id="hash" hidden>This version's fingerprint (SHA-256): <code id="sum"></code><br>Compare it with your file in PowerShell: <code>Get-FileHash Dota-Translator-Setup.exe</code></p>
+    <p style="margin-top:14px">All of it, with the commands, is in <a href="https://github.com/sc0rebreaker/dota-translator/blob/master/SECURITY.md" rel="noopener">SECURITY.md</a>. If you would rather not run an installer at all, you can <a href="https://github.com/sc0rebreaker/dota-translator#setup" rel="noopener">run it from the source</a>.</p>
+  </section>
 
   <section class="step">
     <h2>Windows stops the installer</h2>
@@ -150,6 +173,14 @@
     var el = document.getElementById("latest");
     el.textContent = "Latest version: " + rel.tag_name.replace(/^v/, "") + ", released " + new Date(rel.published_at).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }) + ". The installed app shows its version in its settings window and on its tray icon, and updates itself.";
     el.hidden = false;
+    // The fingerprint and the antivirus report are in the release's own
+    // notes, written by the build. Shown only if they are really there.
+    var body = String(rel.body || "");
+    var sum = body.match(/[0-9a-f]{64}/);
+    if (sum) { document.getElementById("sum").textContent = sum[0]; document.getElementById("hash").hidden = false; }
+    // The report's address is BUILT from the fingerprint, never taken from
+    // the notes: all the notes are asked is whether a report was made.
+    if (sum && body.indexOf("virustotal.com/gui/file/" + sum[0]) >= 0) { document.getElementById("vtlink").href = "https://www.virustotal.com/gui/file/" + sum[0]; document.getElementById("vt").hidden = false; }
   }).catch(function () {});
   // Nothing downloads by itself here (the user: "they should have to
   // manually click"): the button is the only thing that starts it.
