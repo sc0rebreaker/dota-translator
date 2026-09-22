@@ -1,13 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- The app's icon (2026-09-22, the user: "full orange with letter D on it,
+       without the black background"). Ours, nothing of Valve's in it. -->
   <defs>
-    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2129"/><stop offset="1" stop-color="#0a0d10"/></linearGradient>
     <linearGradient id="amber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7c56a"/><stop offset="1" stop-color="#e9a231"/></linearGradient>
   </defs>
-  <rect x="8" y="8" width="240" height="240" rx="54" fill="url(#tile)" stroke="#2b343e" stroke-width="3"/>
-  <!-- back bubble: what was said -->
-  <path d="M58 52h104a22 22 0 0 1 22 22v50a22 22 0 0 1-22 22H98l-30 26v-26h-10a22 22 0 0 1-22-22V74a22 22 0 0 1 22-22z" fill="#2a343f" stroke="#3c4854" stroke-width="3"/>
-  <text x="110" y="122" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="64" fill="#9aa6b3">Я</text>
-  <!-- front bubble: what you read -->
-  <path d="M112 104h88a22 22 0 0 1 22 22v50a22 22 0 0 1-22 22h-10v26l-30-26h-48a22 22 0 0 1-22-22v-50a22 22 0 0 1 22-22z" fill="url(#amber)" stroke="#0a0d10" stroke-width="5"/>
-  <text x="156" y="176" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="64" fill="#231703">A</text>
+  <rect x="0" y="0" width="256" height="256" rx="56" fill="url(#amber)"/>
+  <text x="128" y="186" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-weight="800" font-size="168" fill="#231703">D</text>
 </svg>
