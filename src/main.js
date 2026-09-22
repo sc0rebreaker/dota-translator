@@ -440,6 +440,10 @@ app.whenReady().then(() => {
 const FEEDBACK_URL = 'https://forms.gle/4UwGB5drooGT4mUB9';
 let setupWin = null;
 let tray = null;
+// The balloon's picture is OUR icon, said outright: left to Windows it showed
+// the icon it had cached from an older install (the user, 2026-09-22: 'the
+// old translator logo is used').
+const balloonIcon = () => nativeImage.createFromPath(path.join(here, 'balloon.png'));
 
 function storedKey() {
   if (cfg.geminiApiKey) return cfg.geminiApiKey;            // config.json or GEMINI_API_KEY, in plain
@@ -482,7 +486,7 @@ function openSetup() {
   // asked, 2026-09-22), unless the close IS a quit.
   setupWin.on('close', () => {
     if (quitting || !tray) return;
-    tray.displayBalloon({ iconType: 'info', title: 'Still running in the tray', content: 'Dota Translator keeps working by the clock (behind the ^ arrow). Click its icon for settings, right-click to quit.' });
+    tray.displayBalloon({ iconType: 'custom', icon: balloonIcon(), title: 'Still running in the tray', content: 'Dota Translator keeps working by the clock (behind the ^ arrow). Click its icon for settings, right-click to quit.' });
   });
   setupWin.on('closed', () => { setupWin = null; });
 }
@@ -529,7 +533,7 @@ function makeTray() {
   // new tray icon behind the ^ arrow: say where the app went. A balloon
   // takes no focus, and Windows holds it back itself over a fullscreen game.
   if (storedKey() || hostedOn()) {
-    tray.displayBalloon({ iconType: 'info', title: 'Dota Translator is running', content: 'It sits here by the clock (behind the ^ arrow) and shows translations above the chat in Dota. Click the icon for settings.' });
+    tray.displayBalloon({ iconType: 'custom', icon: balloonIcon(), title: 'Dota Translator is running', content: 'It sits here by the clock (behind the ^ arrow) and shows translations above the chat in Dota. Click the icon for settings.' });
     tray.on('balloon-click', openSetup);
   }
 }
