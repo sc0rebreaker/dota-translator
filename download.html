@@ -98,7 +98,7 @@
   <p class="sub">Windows shows a blue "Windows protected your PC" window the first time you run the installer. That is expected. Here is why it appears, what to press, and where the app goes once it is running.</p>
   <div class="end" style="margin:28px 0 0">
     <a class="btn solid" id="dl" href="https://github.com/sc0rebreaker/dota-translator/releases/latest/download/Dota-Translator-Setup.exe">Download for Windows</a>
-    <a class="btn" href="key.html">Get the free key</a>
+    <a class="btn" href="./">Back to the page</a>
   </div>
   <p class="sub" id="latest" style="font-size:15.5px; margin-top:14px" hidden></p>
 
@@ -109,7 +109,7 @@
       <li><b>Built in public, not on my PC.</b> GitHub builds every installer from the published source, and the <a href="https://github.com/sc0rebreaker/dota-translator/actions/workflows/release.yml" rel="noopener">build logs</a> are there to read. GitHub signs a statement of which source the file came from.</li>
       <li id="vt" hidden><b>Every installer is sent to VirusTotal</b>, where about 70 antivirus engines look at it. <a id="vtlink" href="#" rel="noopener">See the report for exactly this file</a> and judge for yourself - right after a release it can still be running. <b>Expect a few flags, and here is why:</b> when this was last checked, Microsoft, Kaspersky, ESET, Malwarebytes, Sophos, Symantec and about 55 others found nothing, and BitDefender's engine - which several other products also use, so it shows up more than once - raised a <i>heuristic</i> for PowerShell scripts. That is a guess from behaviour, not a match with known malware, and the behaviour is real: the app uses small PowerShell scripts to look at two spots of the screen and to press keys for you, which is also what some malware does. The scripts are plain text in the source. If you run one of those antivirus products it may block the app.</li>
       <li><b>No administrator rights.</b> It installs for your Windows user only: no service, no driver, nothing that starts with Windows. It uninstalls from Windows Settings like anything else.</li>
-      <li><b>It talks to three places:</b> Google (the chat lines to translate, under your own key), GitHub (updates, and one small settings file), and Valve's image server (a hero portrait, only if it is not found in your own Dota). No server of mine, no account, no tracking in the app.</li>
+      <li><b>It talks to three places:</b> this project's translator at translate.dotatranslator.live (the chat lines to translate, which it passes on to Google's Gemini; nothing said is logged), GitHub (updates, and one small settings file), and Valve's image server (a hero portrait, only if it is not found in your own Dota). No server of mine, no account, no tracking in the app.</li>
       <li><b>It listens to Dota and never writes to it.</b> The game sends its chat to the app through Valve's own Game State Integration feed. To show who spoke, the app captures two thumbnail-sized spots of the game's picture and keeps nothing. It presses keys for you only when you press Ctrl+Enter in the game's chat. Each of those is one plain-text file, and automated tests fail if the app ever gains a way to open the game's process. <a href="./#catch">What that means for your account is in the catch.</a></li>
       <li><b>Code scanning and dependency alerts are on.</b> GitHub's scanner reads the code on every change, and watches the packages it is built from.</li>
     </ul>
@@ -148,7 +148,7 @@
 
   <section class="step">
     <h2>After that it lives by the clock</h2>
-    <p>Dota Translator has no main window. Once it has a key it sits in the <b>system tray</b>, the row of small icons beside the clock, and draws only over Dota. Windows hides new tray icons behind the little <b>^</b> arrow: click it and look for the two chat bubbles.</p>
+    <p>Dota Translator has no main window. It sits in the <b>system tray</b>, the row of small icons beside the clock, and draws only over Dota. Windows hides new tray icons behind the little <b>^</b> arrow: click it and look for the two chat bubbles.</p>
     <figure>
       <div class="desk">
         <div class="flyout"><i></i><i></i><i></i><i></i><span class="here"><img src="logo-64.webp" alt=""></span><i></i></div>
@@ -156,12 +156,12 @@
       </div>
       <figcaption>Drawing of the corner of the taskbar. You can drag the icon out of the box onto the taskbar to keep it in view.</figcaption>
     </figure>
-    <p><b>Click the icon</b> for the settings and the key; <b>right-click</b> it to hide the translations or to quit. Starting Dota Translator again from its shortcut while it is already running opens the same settings window. <kbd>Alt</kbd>+<kbd>D</kbd> hides and shows the translations, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> quits.</p>
+    <p><b>Click the icon</b> for the settings; <b>right-click</b> it to hide the translations or to quit. Starting Dota Translator again from its shortcut while it is already running opens the same settings window. <kbd>Alt</kbd>+<kbd>D</kbd> hides and shows the translations, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> quits.</p>
   </section>
 
   <div class="end">
     <a class="btn solid" href="https://github.com/sc0rebreaker/dota-translator/releases/latest/download/Dota-Translator-Setup.exe">Download for Windows</a>
-    <a class="btn" href="key.html">Get the free key</a>
+    <a class="btn" href="./">Back to the page</a>
   </div>
 </main>
 
