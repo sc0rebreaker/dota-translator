@@ -447,7 +447,8 @@
     face.appendChild(img);
   }
 
-  // Until somebody touches it, it sways once to say that it moves.
+  // Until somebody touches it, it keeps swaying to say that it moves (the
+  // user, 2026-09-22: it used to stop after a few seconds).
   let moved = false;
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let t0 = 0;
@@ -455,8 +456,7 @@
       if (!t0) t0 = t;
       if (moved) return;
       const s = (t - t0) / 1000;
-      if (s > 4.2) { range.value = 34; set(34); return; }
-      const v = 34 + 30 * Math.sin(s * 1.5) * Math.exp(-s * 0.35);
+      const v = 34 + 30 * Math.sin(s * 0.9);
       range.value = v; set(v);
       requestAnimationFrame(sway);
     };
