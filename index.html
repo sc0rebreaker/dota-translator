@@ -167,7 +167,7 @@
   .card .ex { margin-top: 12px; font-family: var(--mono); font-size: 13px; color: var(--faint); }
   .card .ex b { color: var(--good); font-weight: 500; }
 
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; text-align: left; counter-reset: s; }
+  .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 380px)); justify-content: center; gap: 16px; margin-top: 40px; text-align: left; counter-reset: s; }
   .step { counter-increment: s; border: 1px solid var(--line); border-radius: 14px; padding: 22px; background: var(--panel-2); }
   .step::before { content: counter(s); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 15px; margin-bottom: 14px; }
   .step p { color: var(--dim); font-size: 15.5px; margin-top: 8px; }
