@@ -478,6 +478,12 @@ function openSetup() {
   // Nothing in this window goes anywhere but the page it was given.
   setupWin.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   setupWin.webContents.on('will-navigate', (e) => e.preventDefault());
+  // Closing the window is not quitting: say where the app went (the user
+  // asked, 2026-09-22), unless the close IS a quit.
+  setupWin.on('close', () => {
+    if (quitting || !tray) return;
+    tray.displayBalloon({ iconType: 'info', title: 'Still running in the tray', content: 'Dota Translator keeps working by the clock (behind the ^ arrow). Click its icon for settings, right-click to quit.' });
+  });
   setupWin.on('closed', () => { setupWin = null; });
 }
 
@@ -611,7 +617,9 @@ ipcMain.on('quit', quitApp);
 // to electron-updater's own quit handler the install is silent and the app
 // stays closed (SEEN: the user's copy 'just closed after updating and I had
 // to manually reopen').
+let quitting = false;
 function quitApp() {
+  quitting = true;
   if (updateState.status === 'ready') {
     try { updater.autoUpdater.quitAndInstall(true, true); return; } catch { /* then a plain quit */ }
   }
