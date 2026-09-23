@@ -344,6 +344,33 @@
         <div class="handle" aria-hidden="true"></div>
         <input type="range" min="0" max="100" value="34" aria-label="Drag to compare the chat without and with the translator">
       </div>
+      <script>
+        // The three languages: the scene, and the headline's word, follow the
+        // tab. The same players (and portraits) in each; only the words change.
+        // Run here, as soon as the tabs exist, so the page OPENS on the right
+        // one. That first choice is a guess from the visitor's time zone (the
+        // browser's own setting; nothing is sent anywhere - the user asked for
+        // it, 2026-09-23): the Americas play on US and South American servers,
+        // where teammates type Spanish; South-East Asia and Oceania on SEA,
+        // where it is Chinese; everybody else sees Russian. A click always wins.
+        {
+          const box = document.getElementById('compare');
+          const word = document.getElementById('theirs');
+          const tabs = [...document.querySelectorAll('.seg button')];
+          const pick = (tab) => {
+            box.dataset.lang = tab.dataset.lang;
+            word.textContent = tab.firstChild.textContent.trim();
+            for (const t of tabs) t.setAttribute('aria-pressed', String(t === tab));
+          };
+          for (const tab of tabs) tab.addEventListener('click', () => pick(tab));
+          const theirsFor = (zone) => /^(America|US|Canada|Brazil|Chile|Mexico)[/]/.test(zone) || zone === 'Pacific/Honolulu' ? 'es'
+            : /^Asia[/](Singapore|Kuala_Lumpur|Kuching|Manila|Jakarta|Pontianak|Makassar|Jayapura|Bangkok|Ho_Chi_Minh|Saigon|Phnom_Penh|Vientiane|Yangon|Rangoon|Brunei|Dili)$|^Australia[/]|^Pacific[/]Auckland$/.test(zone) ? 'zh' : 'ru';
+          let zone = '';
+          try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch { /* an old browser: Russian */ }
+          const first = tabs.find((t) => t.dataset.lang === theirsFor(zone));
+          if (first && first !== tabs[0]) pick(first);
+        }
+      </script>
       <p class="caption">Drag the handle. The app asks the same thing - which language your teammates write - the first time it starts.</p>
     </div>
   </div>
@@ -506,18 +533,6 @@
     img.onerror = () => img.remove();
     img.src = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/' + byPlayer[p] + '.png';
     face.appendChild(img);
-  }
-
-  // The three languages: the scene, and the headline's word, follow the
-  // tab. The same players (and portraits) in each; only the words change.
-  const theirs = document.getElementById('theirs');
-  const tabs = document.querySelectorAll('.seg button');
-  for (const tab of tabs) {
-    tab.addEventListener('click', () => {
-      box.dataset.lang = tab.dataset.lang;
-      theirs.textContent = tab.firstChild.textContent.trim();
-      for (const t of tabs) t.setAttribute('aria-pressed', String(t === tab));
-    });
   }
 
   // Until somebody touches it, it keeps swaying to say that it moves (the
