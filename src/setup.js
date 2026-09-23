@@ -2,7 +2,7 @@
 // translating runs through the project's own server.
 
 const $ = (id) => document.getElementById(id);
-const result = $('result'), save = $('save');
+const result = $('result');
 
 function say(kind, html) {
   result.className = kind;
@@ -47,7 +47,7 @@ for (const r of document.querySelectorAll('input[name=theirs]')) {
     window.setup.fit();
   });
 }
-// Applied at once - this one does not wait for Save.
+// Applied at once, like every choice in this window.
 for (const r of document.querySelectorAll('input[name=sayInto]')) {
   r.addEventListener('change', async () => {
     const now = await window.setup.sayInto(r.value);
@@ -94,15 +94,30 @@ window.setup.state().then((s) => {
 
 $('close').addEventListener('click', () => window.setup.close());
 
-save.addEventListener('click', async () => {
-  save.disabled = true;
-  say('busy', 'Saving...');
+// There is no Save button (the user, 2026-09-23: "remove the save button").
+// Every choice is saved the moment it changes, as the two direction choices
+// already were - a window that saves half its settings on click and half on
+// a button loses the other half when it is closed.
+let savedTimer = null;
+function flash(text, bad) {
+  const el = $('savedNow');
+  el.textContent = text;
+  el.className = 'saved on' + (bad ? ' bad' : '');
+  clearTimeout(savedTimer);
+  savedTimer = setTimeout(() => { el.className = 'saved' + (bad ? ' bad' : ''); }, bad ? 5000 : 1600);
+}
+async function saveNow() {
   const display = document.querySelector('input[name=display]:checked').value;
   const r = await window.setup.save({ display, settings: settingsNow() });
-  save.disabled = false;
-  if (r.ok) {
-    say('ok', '<b>Saved.</b> You can close this window: Dota Translator keeps running as the small icon by the clock (behind the ^ arrow), and clicking it brings this window back.');
-  } else {
-    say('bad', '<b>Not saved.</b> ' + esc(r.why));
-  }
+  if (r && r.ok) flash('Saved.');
+  else flash('Not saved. ' + ((r && r.why) || ''), true);
+}
+for (const r of document.querySelectorAll('input[name=display]')) r.addEventListener('change', saveNow);
+for (const id of ['showOriginal', 'showHeroes', 'autoUpdate']) $(id).addEventListener('change', saveNow);
+// The slider: saved when it is let go, not at every step of a drag.
+$('fontSize').addEventListener('change', saveNow);
+LANGS.addEventListener('change', (e) => {
+  // Nothing ticked would be an app that translates nothing: not allowed.
+  if (!LANGS.querySelector('input:checked')) { e.target.checked = true; flash('Keep at least one language.', true); return; }
+  saveNow();
 });
