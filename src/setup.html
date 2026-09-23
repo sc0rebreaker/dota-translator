@@ -73,9 +73,8 @@
   .actions { margin-top: 0; padding-top: 24px; display: flex; gap: 10px; align-items: center; }
   .actions .grow { flex: 1; }
   /* The note under the block it is about (the user: "the saved is in the very bottom of the ui, instead of under it like other boxes have"). */
-  .note { color: var(--good); }
+  .note { color: var(--good); min-height: 1.4em; margin-top: 6px; }
   .note.bad { color: var(--warn); }
-  .note:empty { display: none; }
   .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); margin-right: 8px; vertical-align: 1px; }
   .dot.ok { background: var(--good); } .dot.wait { background: var(--accent); } .dot.bad { background: var(--warn); }
   i.L { font-style: inherit; }

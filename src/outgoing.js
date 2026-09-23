@@ -20,7 +20,14 @@ import { askGeminiHedged } from './translate.js';
 // Two languages told apart from their neighbours by letters only they use
 // (a review, 2026-09-23: Ctrl+Enter answered a Ukrainian teammate in RUSSIAN,
 // a Persian one in Arabic). Checked first; the gate itself is unchanged.
-const OWN_LETTERS = { ukrainian: /[\u0456\u0457\u0454\u0491\u0406\u0407\u0404\u0490]/, persian: /[\u067E\u0686\u0698\u06AF]/ };
+// Persian is told by the KEYBOARD, not by letters Iraqi and Gulf Arabic also
+// write (a review, 2026-09-23: چ and گ flipped Iraqi players to Persian and
+// missed most Persian): a Persian keyboard types ی and ک, an Arabic one ي, ك
+// and ة - so Persian letters with none of the Arabic keyboard's.
+const OWN_LETTERS = {
+  ukrainian: /[\u0456\u0457\u0454\u0491\u0406\u0407\u0404\u0490]/,
+  persian: { test: (t) => /[\u06CC\u06A9\u067E\u0698]/.test(t) && !/[\u064A\u0643\u0629\u0649]/.test(t) },
+};
 export const SCRIPT_LANGUAGE = {
   ukrainian: 'Ukrainian',
   cyrillic: 'Russian',
@@ -144,6 +151,9 @@ const tidyOut = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().sl
 // A plain string - an own-key answer, or a line the player corrected by hand -
 // is kept for good.
 const VERSIONS = '#versions';
+// A short fingerprint of a line as the server wrote it: when the text no longer
+// matches, the player corrected it by hand, and that line is kept for good.
+const mark = (s) => { let h = 2166136261; for (const c of String(s)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16); };
 export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize = 500, store = null, remote = null } = {}) {
   const cache = new Map();
   let latest = {};
@@ -151,10 +161,17 @@ export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize
     try {
       const was = store.read();
       if (was && typeof was === 'object' && !Array.isArray(was)) {
+        // A file from before versions (0.6.3 and older): its lines were written
+        // by an older prompt, so each is asked once more when the server says
+        // which prompt is current - the "going top help" lines included.
+        const legacy = !(VERSIONS in was);
         for (const [k, v] of Object.entries(was)) {
           if (k === VERSIONS) { if (v && typeof v === 'object') latest = { ...v }; continue; }
-          if (typeof v === 'string' && v.trim()) cache.set(k, { out: tidyOut(v) });
-          else if (v && typeof v.out === 'string' && v.out.trim()) cache.set(k, { out: tidyOut(v.out), v: typeof v.v === 'string' ? v.v : '' });
+          if (typeof v === 'string' && v.trim()) cache.set(k, legacy ? { out: tidyOut(v), v: 'legacy' } : { out: tidyOut(v) });
+          else if (v && typeof v.out === 'string' && v.out.trim()) {
+            const edited = typeof v.h === 'string' && v.h !== mark(v.out);
+            cache.set(k, edited ? { out: tidyOut(v.out) } : { out: tidyOut(v.out), v: typeof v.v === 'string' ? v.v : '' });
+          }
         }
       }
     } catch { /* no file yet, or not JSON: start afresh */ }
@@ -162,11 +179,13 @@ export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize
   const keep = () => {
     if (!store) return;
     const all = {};
-    for (const [k, e] of cache) all[k] = e.v ? { out: e.out, v: e.v } : e.out;
+    for (const [k, e] of cache) all[k] = e.v ? { out: e.out, v: e.v, h: mark(e.out) } : e.out;
     all[VERSIONS] = latest;
     try { store.write(all); } catch { /* a read-only disk costs the memory, not the line */ }
   };
   const stale = (e, language) => Boolean(e.v && latest[language] && e.v !== latest[language]);
+  // The first save writes the file in the new form, with the legacy marks, so
+  // an old file is converted once and a hand edit made after it is detected.
   async function say(text, language) {
     const clean = tidySay(text);
     if (!clean) throw new Error('nothing to translate');

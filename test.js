@@ -2091,10 +2091,35 @@ ok('eight-language review fixes: the gates, the detector, Ukrainian and Persian,
   assert.equal((await say('hi', 'Russian')).out, 'привет');                    // stale: asked again
   assert.equal(asked, 1);
   assert.equal((await say('by hand', 'Russian')).out, 'как я написал');        // a corrected line is kept
-  assert.deepEqual(saved['Russian|hi'], { out: 'привет', v: 'bbbbbbbb' });
+  assert.deepEqual([saved['Russian|hi'].out, saved['Russian|hi'].v], ['привет', 'bbbbbbbb']);
   assert.equal(saved['Russian|by hand'], 'как я написал');
   assert.equal(saved['#versions'].Russian, 'bbbbbbbb');
   // The "Saved." notes sit under their own blocks, not by Close.
   const html = fs.readFileSync('src/setup.html', 'utf8');
   assert.ok(html.includes('id="displayNow"') && html.includes('id="moreNow"') && !html.includes('id="savedNow"'));
+});
+ok('review round 2: legacy said.json lines asked once more, hand edits kept, Persian by keyboard, Spanish ordinals and contractions', async () => {
+  const { scriptOf, createOutgoing } = await import('./src/outgoing.js');
+  // A 0.6.3 file (no #versions): its hosted lines are asked again once the server's version is known.
+  let saved = { 'Russian|going top help': 'иду на топ помогать' };
+  let asked = 0;
+  const say = createOutgoing({ store: { read: () => saved, write: (a) => { saved = a; } }, remote: () => async () => { asked++; return { out: 'иду топ, помогите', v: 'cccccccc' }; } });
+  assert.equal((await say('going top help', 'Russian')).out, 'иду на топ помогать');   // nothing known yet: as before
+  say.learn({ Russian: 'cccccccc' });
+  assert.equal((await say('going top help', 'Russian')).out, 'иду топ, помогите');
+  assert.equal(asked, 1);
+  // A line the player edits in the file (fingerprint no longer matches) is kept through a prompt change.
+  saved['Russian|going top help'] = { ...saved['Russian|going top help'], out: 'иду топ, помогите мне' };
+  const say2 = createOutgoing({ store: { read: () => saved, write: (a) => { saved = a; } }, remote: () => async () => { asked++; return { out: 'x', v: 'dddddddd' }; } });
+  say2.learn({ Russian: 'dddddddd' });
+  assert.equal((await say2('going top help', 'Russian')).out, 'иду топ, помогите мне');
+  assert.equal(asked, 1);
+  // Persian by keyboard letters; Iraqi Arabic with چ and گ stays Arabic.
+  assert.equal(scriptOf('کمک کنید'), 'persian');          // کمک کنید
+  assert.equal(scriptOf('شكو ماكو چاي'), 'arabic'); // شكو ماكو چاي
+  // Spanish ordinals, dota2 and 7u7 no longer veto; English contractions are English.
+  for (const s of ['defiendan la 2da torre', 'vamos a la 3er torre', 'hola 7u7 vamos', 'q tal el dota2 hoy wey']) assert.equal(looksSpanish(s), true, s);
+  for (const e of ["that's sus", "don't feed pls", 'wallah el feeder da 7aywan']) assert.equal(looksSpanish(e), false, e);
+  // Korean laughter with ;; costs no call either.
+  assert.equal(needsTranslation('ㅋㅋㅋ;;', ['hangul']), false);
 });

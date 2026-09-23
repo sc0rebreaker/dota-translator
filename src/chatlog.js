@@ -23,7 +23,7 @@ export const SCRIPTS = {
   han: /[\u4E00-\u9FFF]/,
   // Syllables AND the bare consonants chat is typed in (ㅈㅅ sorry, ㄱㄱ go go) -
   // but a line of nothing but laughter or crying (ㅋㅋㅋ, ㅠㅠ) costs no call.
-  hangul: { test: (t) => /[\uAC00-\uD7AF\u3131-\u318E]/.test(t) && !/^[\s\u314B\u314E\u3160\u315C.,!?~^]*$/.test(t) },
+  hangul: { test: (t) => /[\uAC00-\uD7AF\u3131-\u318E]/.test(t) && !/^[\s\u314B\u314E\u3160\u315C.,!?~^;]*$/.test(t) },
   // Letters only: a line of Arabic-Indic digits or a lone ؟ is not a line to translate.
   arabic: /[\u0620-\u064A\u066E-\u06D3\u06FA-\u06FF]/,
   thai: /[\u0E00-\u0E7F]/,

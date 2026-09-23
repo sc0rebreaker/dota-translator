@@ -67,16 +67,20 @@ const SPANISH_VERB = /^(push|farm|gank|feed|fed|stack)(e|ea|ean|een|ear|eo|eas|e
 // Arabic typed in Latin letters (Arabizi) uses digits for sounds Latin lacks
 // (3al, 7aywan, la2) and a few words no Spanish player types. Never Spanish.
 const ARABIZI_WORDS = new Set(['wallah', 'walah', 'yalla', 'yallah', 'khalas', 'ya3ni', 'inshallah']);
-const DOTA_NUMBERED = /^(t[1-4]|lvl?\d+|x\d+|\d+v\d+|\d+(min|m|s|k)?)$/;
+// Numbered things that are not Arabizi: towers, levels, 1v1, timings, Spanish
+// ordinals (2da, 3er, 5to), dota2, and the 7u7 face (a review, 2026-09-23).
+const DOTA_NUMBERED = /^(t[1-4]|lvl?\d+|x\d+|\d+x|\d+v\d+|\d+(min|m|s|k|seg|sec|hs|h)?|\d+(do|da|ro|ra|er|to|ta|vo|va|no|na|mo|ma)|dota\d|\d+u\d+)$/;
 const arabizi = (w) => ARABIZI_WORDS.has(w) || (/[a-z]/.test(w) && /[23579]/.test(w) && !DOTA_NUMBERED.test(w));
 
 export function looksSpanish(text) {
   const t = String(text || '');
   if (!t.trim()) return false;
   const ws = words(t);
-  if (ws.some(arabizi)) return false;
+  // Spanish's own letters (ñ ¿ ¡ accents) outweigh an Arabizi-looking word.
+  if (!SPANISH_ONLY.test(t) && ws.some(arabizi)) return false;
   let es = 0, en = 0;
-  for (const w of ws) { if (SPANISH.has(w) || SPANISH_VERB.test(w)) es += WEAK.has(w) ? 0.5 : 1; else if (ENGLISH.has(w)) en++; }
+  // A contraction (that's, don't) is English: Spanish is typed with no apostrophes.
+  for (const w of ws) { if (w.includes("'")) en++; else if (SPANISH.has(w) || SPANISH_VERB.test(w)) es += WEAK.has(w) ? 0.5 : 1; else if (ENGLISH.has(w)) en++; }
   if (SPANISH_ONLY.test(t)) es += 2;
   // A line with no English word and any Spanish one is Spanish - that is
   // where "hola" and "vamos" live. A mixed line has to be MORE Spanish

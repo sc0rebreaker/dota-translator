@@ -106,9 +106,10 @@ function flash(where, text, bad) {
   const el = $(where);
   el.textContent = text;
   el.className = 'hint note' + (bad ? ' bad' : '');
-  window.setup.fit();
+  // The note's line is always there (min-height): no resize, no re-centring
+  // of a window the player may have moved (a review, 2026-09-23).
   clearTimeout(timers[where]);
-  timers[where] = setTimeout(() => { el.textContent = ''; window.setup.fit(); }, bad ? 5000 : 1800);
+  timers[where] = setTimeout(() => { el.textContent = ''; }, bad ? 5000 : 1800);
 }
 async function saveNow(where) {
   const display = document.querySelector('input[name=display]:checked').value;
