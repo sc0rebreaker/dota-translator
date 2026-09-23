@@ -21,8 +21,11 @@ export const LANGUAGES = [
   ['thai', 'Thai'],
 ];
 
-export const THEIRS = ['Russian', 'Spanish'];
-const THEIR_SCRIPT = { Russian: 'cyrillic', Spanish: 'spanish' };
+// Russian for EU, Spanish for US, Chinese for SEA (the user, 2026-09-23: the
+// most repeated SEA complaint is Chinese players who cannot use English -
+// China's own servers are emptying and they queue on SEA).
+export const THEIRS = ['Russian', 'Spanish', 'Chinese'];
+const THEIR_SCRIPT = { Russian: 'cyrillic', Spanish: 'spanish', Chinese: 'han' };
 const isEnglish = (s) => String(s || '').trim().toLowerCase() === 'english';
 
 /** What the window is shown: only these, never the key. */

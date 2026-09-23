@@ -10,7 +10,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadConfig, saveConfig, onDisk, CONFIG_PATH, DATA_DIR } from './config.js';
 import { faces } from './heroface.js';
 import { createPatchWatch, SLOW_TEXT } from './patchwatch.js';
-import { uiSettings, settingsPatch, LANGUAGES } from './settings.js';
+import { uiSettings, settingsPatch, LANGUAGES, THEIRS } from './settings.js';
 import { checkKey, tidyKey } from './keycheck.js';
 import updater from 'electron-updater';
 import { startWatching } from './watcher.js';
@@ -310,7 +310,7 @@ function heartbeat(on) {
   beat.unref?.();
 }
 
-const spoken = createLanguageTracker({ fallback: cfg.theirLanguage === 'Spanish' ? 'Spanish' : 'Russian' });
+const spoken = createLanguageTracker({ fallback: THEIRS.includes(cfg.theirLanguage) ? cfg.theirLanguage : 'Russian' });
 // What has been said before is said the same way again: said.json, beside
 // the settings, English -> what was sent. The player can read and correct it.
 const SAID_PATH = path.join(DATA_DIR, 'said.json');

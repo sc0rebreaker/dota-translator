@@ -2037,3 +2037,15 @@ ok('their language: the setting switches the script on, relabels the direction, 
   t.fallback = 'Russian'; t.saw('hello'); assert.equal(t.language, 'Russian');
   assert.ok(fs.readFileSync('src/setup.html', 'utf8').includes('name="theirs"'));
 });
+ok('Chinese for SEA servers: the third choice switches han on, relabels, and the tracker starts from it', async () => {
+  const { createLanguageTracker } = await import('./src/outgoing.js');
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] }), { theirLanguage: 'Chinese', scripts: ['han', 'cyrillic'] });
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Chinese' });
+  assert.equal(uiSettings({ theirLanguage: 'Chinese' }).theirLanguage, 'Chinese');
+  const t = createLanguageTracker({ fallback: 'Chinese' });
+  assert.equal(t.language, 'Chinese');
+  t.saw('推塔 快点'); assert.equal(t.language, 'Chinese');
+  const html = fs.readFileSync('src/setup.html', 'utf8');
+  assert.ok(html.includes('value="Chinese"') && html.includes('SEA servers'));
+  assert.ok(needsTranslation('中单 别送了', ['han']));
+});
