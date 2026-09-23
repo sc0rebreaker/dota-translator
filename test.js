@@ -1294,6 +1294,32 @@ ok('the landing page keeps the promises the project made about how it talks', ()
   for (const [, id] of html.matchAll(/href="#([a-z-]+)"/g)) assert.ok(html.includes(`id="${id}"`), 'no section #' + id);
 });
 
+await okAsync('the landing page offers exactly the languages the app does, and its demo lines are ones the app would translate', async () => {
+  // The hero's tabs are the settings window's "Your teammates write" (the
+  // user, 2026-09-23: the top of the page said Russian only). A language
+  // added to the app, or taken out, has to be added to the page too.
+  const { THEIRS } = await import('./src/settings.js');
+  const { SCRIPT_LANGUAGE } = await import('./src/outgoing.js');
+  const html = fs.readFileSync(path.join('docs', 'index.html'), 'utf8');
+  const tabs = [...html.matchAll(/<button type="button" data-lang="([a-z]+)" aria-pressed="(true|false)">([A-Za-z]+) /g)];
+  assert.deepEqual(tabs.map((t) => t[3]), THEIRS, 'the tabs are not the app\'s choices');
+  assert.deepEqual(tabs.map((t) => t[2]), THEIRS.map((_, n) => String(n === 0)), 'the first tab is not the one shown');
+  assert.match(html, new RegExp('They type <b id="theirs">' + THEIRS[0] + '</b>'));
+  assert.match(html, new RegExp('<div class="compare" id="compare" data-lang="' + tabs[0][1] + '">'));
+  assert.match(html, new RegExp('<p class="proofline"><b>' + THEIRS.join(', ') + '</b>'), 'the hero does not name every language');
+  for (const [, code, , name] of tabs) {
+    const blocks = html.split('<div class="chat" data-lang="' + code + '">').slice(1).map((b) => b.split('<div class="gap">')[0].split('\n          </div>')[0]);
+    assert.equal(blocks.length, 2, name + ' is not in both halves of the slider');
+    // The WITHOUT half is what was said. Each line of it must be one the app
+    // really sends to the translator - a line it would leave alone has no
+    // business being shown translated.
+    const script = Object.keys(SCRIPT_LANGUAGE).find((s) => SCRIPT_LANGUAGE[s] === name);
+    const said = [...blocks[0].matchAll(/<span(?: lang="[a-zA-Z-]+")?>([^<]+)<[/]span><[/]div>/g)].map((m) => m[1]);
+    assert.equal(said.length, 4, name + ': four lines said');
+    for (const line of said) assert.ok(needsTranslation(line, [script]), name + ': the app would not translate "' + line + '"');
+  }
+});
+
 await okAsync('the game\'s own hero portraits: a pak is indexed, a texture decoded, and anything odd is a quiet no', async () => {
   const { readIndex, decodeTexture, faces } = await import('./src/heroface.js');
   // A compiled texture as the game lays one out: 16 bytes of header, one

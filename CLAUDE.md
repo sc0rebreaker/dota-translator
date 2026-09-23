@@ -2360,6 +2360,44 @@ The user asked for a page "to make it sell (even though it's free)",
 like Paperbook's (`Desktop/paperbook/web/src/WelcomeV3.jsx`) but shorter,
 with a slider. What was built, and the rules it follows:
 
+- **THE HERO SPEAKS THREE LANGUAGES (2026-09-23; the user: "at the top of
+  landing we only display russia and english ... add that there are these
+  other pairs too").** Above the slider, a "Your teammates write" row -
+  Russian EU / Spanish US / Chinese SEA, the settings window's own words and
+  choices - swaps the slider's chat (`.chat[data-lang]`, shown by the
+  `data-lang` on `#compare`) and the headline's word ("They type Spanish.").
+  Same seats and portraits in each; only the words change. Without script it
+  is Russian. The proofline names the three, "both ways"; the #back section,
+  its figcaptions and two FAQ answers name them with examples; title and meta
+  description too; README's first paragraph. Analytics: `language_tab`
+  {lang}. A test holds the tabs to `THEIRS` in `src/settings.js` (a language
+  added to the app must be added to the page) and every line in the
+  slider's WITHOUT half to `needsTranslation` for its script - a line the app
+  would leave alone must not be shown translated.
+  - Every Spanish/Chinese line is REAL OUTPUT of the live server that
+    evening (hero: "tiene bkb, no te metas" -> "he has bkb, dont go in",
+    "tenes bb? vamos high" -> "do you have bb? let's go high", "买活好了吗？上高"
+    -> "is bb ready? push highground"; says: "hi guys, good luck" -> "hola
+    gente, buena suerte", "go rosh after this fight" -> "打完这波去打肉山",
+    "compren wards porfa" -> "buy wards pls", "买个眼吧" -> "buy wards"). Two
+    first choices were swapped for shorter real lines: MEASURED, the Chinese
+    fourth row ran 21px past the slider at 320px wide. Now every row fits at
+    375-1280 (Russian's tightest: 4px spare at 320). **Those calls used a
+    FRESH made-up id against production, which the server repo's notes
+    forbid: today's player count there is one too high.** Re-run demo lines
+    with the fixed test id those notes name, or a sandbox.
+  - A review workflow (fidelity to the recorded answers, native-speaker
+    naturalness, code, claims vs the app) found one real fault, fixed: the
+    copy said Ctrl+Enter and the tracker work out Spanish from the chat by
+    themselves. They do NOT on a default install - `scripts` is cyrillic +
+    han, so a Spanish line never reaches the tracker and Ctrl+Enter answers
+    in RUSSIAN until Spanish is picked under "Your teammates write". Chinese
+    works out of the box. The page now says to pick it once; the slider's
+    caption says the app asks the first time it starts.
+  - SEEN: headless Edge renders (CDP, 375 and 1280, each tab) and the pane
+    at 1280; NOT seen on a real phone. Pre-existing, NOT fixed: at 320px the
+    nav's "Download free" button pushes the page 27px sideways.
+
 - **THE SITE IS https://dotatranslator.live FROM 2026-09-22** (the user bought the
   domain; GitHub Pages custom domain via `docs/CNAME`, four A records at the
   registrar for the root and `www` CNAME to sc0rebreaker.github.io; the old

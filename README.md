@@ -1,8 +1,9 @@
 # Dota Translator
 
 Translates Russian Dota 2 chat into English, live, on a transparent overlay
-above the game. Free for players, source available, nothing to sign up for:
-download, restart Dota once, play.
+above the game - and Spanish (US servers) and Chinese (SEA) the same way,
+with an answer back in their language on Ctrl+Enter. Free for players,
+source available, nothing to sign up for: download, restart Dota once, play.
 
 ```
 [all]  unc status: hello everyone
