@@ -55,10 +55,12 @@ export function createHosted({ url, id, version = '', fetchImpl = globalThis.fet
     },
     // Once a minute while Dota is in front: 'somebody is in a game'. The id
     // and nothing else; a failure is nobody's business.
-    async ping() { try { await post('/v1/ping', {}); } catch { /* the count is the server's problem */ } },
+    // It answers which prompt version writes each language now, so a line an
+    // older prompt wrote is not pasted again from said.json.
+    async ping() { try { const d = await post('/v1/ping', {}); return d && d.say && typeof d.say === 'object' ? d.say : null; } catch { return null; } },
     async say(text, into) {
       const data = await post('/v1/say', { text, into });
-      return typeof (data && data.out) === 'string' ? data.out : '';
+      return { out: typeof (data && data.out) === 'string' ? data.out : '', v: typeof (data && data.v) === 'string' ? data.v : '' };
     },
   };
 }

@@ -17,11 +17,17 @@ import { askGeminiHedged } from './translate.js';
 // A script is not a language - Cyrillic is also Ukrainian, Arabic script
 // also Persian - but on the servers this is for, it is the right bet, and
 // `replyLanguage` in config.json overrides it.
+// Two languages told apart from their neighbours by letters only they use
+// (a review, 2026-09-23: Ctrl+Enter answered a Ukrainian teammate in RUSSIAN,
+// a Persian one in Arabic). Checked first; the gate itself is unchanged.
+const OWN_LETTERS = { ukrainian: /[\u0456\u0457\u0454\u0491\u0406\u0407\u0404\u0490]/, persian: /[\u067E\u0686\u0698\u06AF]/ };
 export const SCRIPT_LANGUAGE = {
+  ukrainian: 'Ukrainian',
   cyrillic: 'Russian',
   han: 'Chinese',
   hangul: 'Korean',
   greek: 'Greek',
+  persian: 'Persian',
   arabic: 'Arabic',
   thai: 'Thai',
   spanish: 'Spanish',       // last: a line with any other script is that script
@@ -30,7 +36,8 @@ export const SCRIPT_LANGUAGE = {
 export const MAX_SAY = 200;          // a chat line, not a letter
 
 export function scriptOf(text) {
-  for (const name of Object.keys(SCRIPT_LANGUAGE)) if (SCRIPTS[name].test(String(text || ''))) return name;
+  const t = String(text || '');
+  for (const name of Object.keys(SCRIPT_LANGUAGE)) if ((OWN_LETTERS[name] || SCRIPTS[name]).test(t)) return name;
   return '';
 }
 
@@ -130,33 +137,68 @@ export function outFrom(replyText) {
 // What comes back from anywhere is made one chat line before it is pasted.
 const tidyOut = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, 400);
 
+// A line the hosted translator wrote carries the prompt version (v) that
+// wrote it; when the server says a language's prompt has changed, the old
+// line is asked again instead of pasted (a review, 2026-09-23: a player who
+// had once sent "going top help" kept pasting the wrong line after the fix).
+// A plain string - an own-key answer, or a line the player corrected by hand -
+// is kept for good.
+const VERSIONS = '#versions';
 export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize = 500, store = null, remote = null } = {}) {
   const cache = new Map();
+  let latest = {};
   if (store) {
     try {
       const was = store.read();
       if (was && typeof was === 'object' && !Array.isArray(was)) {
-        for (const [k, v] of Object.entries(was)) if (typeof v === 'string' && v.trim()) cache.set(k, v.replace(/\s+/g, ' ').trim().slice(0, 400));
+        for (const [k, v] of Object.entries(was)) {
+          if (k === VERSIONS) { if (v && typeof v === 'object') latest = { ...v }; continue; }
+          if (typeof v === 'string' && v.trim()) cache.set(k, { out: tidyOut(v) });
+          else if (v && typeof v.out === 'string' && v.out.trim()) cache.set(k, { out: tidyOut(v.out), v: typeof v.v === 'string' ? v.v : '' });
+        }
       }
     } catch { /* no file yet, or not JSON: start afresh */ }
   }
-  const keep = () => { if (store) { try { store.write(Object.fromEntries(cache)); } catch { /* a read-only disk costs the memory, not the line */ } } };
-  return async function say(text, language) {
+  const keep = () => {
+    if (!store) return;
+    const all = {};
+    for (const [k, e] of cache) all[k] = e.v ? { out: e.out, v: e.v } : e.out;
+    all[VERSIONS] = latest;
+    try { store.write(all); } catch { /* a read-only disk costs the memory, not the line */ }
+  };
+  const stale = (e, language) => Boolean(e.v && latest[language] && e.v !== latest[language]);
+  async function say(text, language) {
     const clean = tidySay(text);
     if (!clean) throw new Error('nothing to translate');
     const key = language + '|' + clean.toLowerCase();
-    if (cache.has(key)) return { out: cache.get(key), language, cached: true };
+    const had = cache.get(key);
+    if (had && !stale(had, language)) return { out: had.out, language, cached: true };
     // Two tries, not three: the incoming chat lives on the same 15 calls a minute.
     // `remote()` answers a function when the hosted translator is in use (no
     // key of the player's own): it is sent the line, never a prompt.
     const hosted = remote ? remote() : null;
-    const out = hosted
-      ? tidyOut(await hosted(clean, language))
-      : outFrom(await ask({ apiKey: typeof apiKey === 'function' ? apiKey() : apiKey, model, request: buildOutRequest(clean, language) }, { attempts: 2 }));
+    let out, v = '';
+    if (hosted) {
+      const r = await hosted(clean, language);
+      out = tidyOut(typeof r === 'string' ? r : r && r.out);
+      v = r && typeof r.v === 'string' ? r.v : '';
+      if (v) latest[language] = v;
+    } else {
+      out = outFrom(await ask({ apiKey: typeof apiKey === 'function' ? apiKey() : apiKey, model, request: buildOutRequest(clean, language) }, { attempts: 2 }));
+    }
     if (!out) throw new Error('the model gave no translation');
-    cache.set(key, out);
+    cache.delete(key);
+    cache.set(key, v ? { out, v } : { out });
     if (cache.size > cacheSize) cache.delete(cache.keys().next().value);
     keep();
     return { out, language, cached: false };
+  }
+  // The heartbeat's answer: which prompt version writes each language now.
+  say.learn = (versions) => {
+    if (!versions || typeof versions !== 'object') return;
+    let changed = false;
+    for (const [lang, v] of Object.entries(versions)) if (/^[A-Za-z]{3,20}$/.test(lang) && /^[0-9a-f]{8}$/.test(String(v)) && latest[lang] !== v) { latest[lang] = v; changed = true; }
+    if (changed) keep();
   };
+  return say;
 }

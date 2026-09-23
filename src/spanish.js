@@ -36,6 +36,7 @@ compra compren compro cura curar retro retrocede vuelve vuelvo vuelvan tira tire
 rapido lento tarde temprano abajo arriba izquierda derecha
 ganamos perdimos ganar perder ganaron perdieron ganando perdiendo
 nose dale ta pa ke kien xfa
+atras retirense retirada retrocedan acaba acabo termina defiendan defiende deja dejen hagan sigan pongan mejor apurense matenlo maten mata haces hace hacen hago hacer
 `.split(/\s+/).filter(Boolean));
 
 // Words that are English and not Spanish. Same idea, the other way - and
@@ -53,19 +54,34 @@ yeah nope ok okay guys guy man dude
 // proof on its own.
 const SPANISH_ONLY = /[ñÑ¿¡]|[áéíóú]/;
 
-const words = (text) => String(text || '').toLowerCase().replace(/[^\p{L}\p{N}\s_]/gu, ' ').split(/\s+/).filter(Boolean);
+// Apostrophes stay inside a word: "i've" is not "i" + the Spanish "ve".
+const words = (text) => String(text || '').toLowerCase().replace(/[^\p{L}\p{N}\s_']/gu, ' ').split(/\s+/).map((w) => w.replace(/^'+|'+$/g, '')).filter(Boolean);
+
+// Half a vote: Spanish shorthand that English Dota chat types too (q is an
+// ability key, xd is laughter everywhere). One of these alone is not Spanish.
+const WEAK = new Set(['q', 'k', 'ke', 'ta', 'pa', 'na', 'xd']);
+
+// English Dota verbs with a Spanish ending are Spanish: pusheen, farmear, deja de fedear.
+const SPANISH_VERB = /^(push|farm|gank|feed|fed|stack)(e|ea|ean|een|ear|eo|eas|eamos|eando|eado)$/;
+
+// Arabic typed in Latin letters (Arabizi) uses digits for sounds Latin lacks
+// (3al, 7aywan, la2) and a few words no Spanish player types. Never Spanish.
+const ARABIZI_WORDS = new Set(['wallah', 'walah', 'yalla', 'yallah', 'khalas', 'ya3ni', 'inshallah']);
+const DOTA_NUMBERED = /^(t[1-4]|lvl?\d+|x\d+|\d+v\d+|\d+(min|m|s|k)?)$/;
+const arabizi = (w) => ARABIZI_WORDS.has(w) || (/[a-z]/.test(w) && /[23579]/.test(w) && !DOTA_NUMBERED.test(w));
 
 export function looksSpanish(text) {
   const t = String(text || '');
   if (!t.trim()) return false;
   const ws = words(t);
+  if (ws.some(arabizi)) return false;
   let es = 0, en = 0;
-  for (const w of ws) { if (SPANISH.has(w)) es++; else if (ENGLISH.has(w)) en++; }
+  for (const w of ws) { if (SPANISH.has(w) || SPANISH_VERB.test(w)) es += WEAK.has(w) ? 0.5 : 1; else if (ENGLISH.has(w)) en++; }
   if (SPANISH_ONLY.test(t)) es += 2;
   // A line with no English word and any Spanish one is Spanish - that is
   // where "hola" and "vamos" live. A mixed line has to be MORE Spanish
   // than English, and clearly.
-  if (es === 0) return false;
+  if (es < 1) return false;
   if (en === 0) return true;
   return es >= 2 && es > en;
 }

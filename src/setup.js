@@ -100,26 +100,28 @@ $('close').addEventListener('click', () => window.setup.close());
 // Every choice is saved the moment it changes, as the two direction choices
 // already were - a window that saves half its settings on click and half on
 // a button loses the other half when it is closed.
-let savedTimer = null;
-function flash(text, bad) {
-  const el = $('savedNow');
+// Each note sits under the block it is about, like the two language blocks.
+const timers = {};
+function flash(where, text, bad) {
+  const el = $(where);
   el.textContent = text;
-  el.className = 'saved on' + (bad ? ' bad' : '');
-  clearTimeout(savedTimer);
-  savedTimer = setTimeout(() => { el.className = 'saved' + (bad ? ' bad' : ''); }, bad ? 5000 : 1600);
+  el.className = 'hint note' + (bad ? ' bad' : '');
+  window.setup.fit();
+  clearTimeout(timers[where]);
+  timers[where] = setTimeout(() => { el.textContent = ''; window.setup.fit(); }, bad ? 5000 : 1800);
 }
-async function saveNow() {
+async function saveNow(where) {
   const display = document.querySelector('input[name=display]:checked').value;
   const r = await window.setup.save({ display, settings: settingsNow() });
-  if (r && r.ok) flash('Saved.');
-  else flash('Not saved. ' + ((r && r.why) || ''), true);
+  if (r && r.ok) flash(where, 'Saved.');
+  else flash(where, 'Not saved. ' + ((r && r.why) || ''), true);
 }
-for (const r of document.querySelectorAll('input[name=display]')) r.addEventListener('change', saveNow);
-for (const id of ['showOriginal', 'showHeroes', 'autoUpdate']) $(id).addEventListener('change', saveNow);
+for (const r of document.querySelectorAll('input[name=display]')) r.addEventListener('change', () => saveNow('displayNow'));
+for (const id of ['showOriginal', 'showHeroes', 'autoUpdate']) $(id).addEventListener('change', () => saveNow('moreNow'));
 // The slider: saved when it is let go, not at every step of a drag.
-$('fontSize').addEventListener('change', saveNow);
+$('fontSize').addEventListener('change', () => saveNow('moreNow'));
 LANGS.addEventListener('change', (e) => {
   // Nothing ticked would be an app that translates nothing: not allowed.
-  if (!LANGS.querySelector('input:checked')) { e.target.checked = true; flash('Keep at least one language.', true); return; }
-  saveNow();
+  if (!LANGS.querySelector('input:checked')) { e.target.checked = true; flash('moreNow', 'Keep at least one language.', true); return; }
+  saveNow('moreNow');
 });

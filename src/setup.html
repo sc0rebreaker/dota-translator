@@ -72,9 +72,10 @@
   #result code { font-family: var(--mono); color: var(--text); }
   .actions { margin-top: 0; padding-top: 24px; display: flex; gap: 10px; align-items: center; }
   .actions .grow { flex: 1; }
-  .saved { color: var(--good); font-size: 14px; opacity: 0; transition: opacity .25s; }
-  .saved.on { opacity: 1; }
-  .saved.bad { color: var(--warn); }
+  /* The note under the block it is about (the user: "the saved is in the very bottom of the ui, instead of under it like other boxes have"). */
+  .note { color: var(--good); }
+  .note.bad { color: var(--warn); }
+  .note:empty { display: none; }
   .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); margin-right: 8px; vertical-align: 1px; }
   .dot.ok { background: var(--good); } .dot.wait { background: var(--accent); } .dot.bad { background: var(--warn); }
   i.L { font-style: inherit; }
@@ -90,6 +91,7 @@
     <label><input type="radio" name="display" value="above" checked><span><b>Above Dota's chat</b>Plain text, like the game's own</span></label>
     <label><input type="radio" name="display" value="box"><span><b>In its own box</b>A dark panel in a corner</span></label>
   </div>
+  <p class="hint note" id="displayNow" role="status"></p>
 
   <div class="sayblock">
     <h3>Your teammates write</h3>
@@ -126,13 +128,13 @@
         <div class="size"><input type="range" id="fontSize" min="11" max="28" step="1"><output id="fontSizeOut"></output></div>
       </div>
       <p class="files">There are more settings than these - timing, position, the model - in a file called <b>config.json</b>, for people who like that sort of thing. <button class="link" id="folder" type="button">Open its folder</button></p>
+      <p class="hint note" id="moreNow" role="status"></p>
     </div>
   </details>
 
   <div id="result" role="status"></div>
 
   <div class="actions">
-    <span class="saved" id="savedNow" role="status"></span>
     <span class="grow"></span>
     <button id="close" type="button">Close</button>
   </div>

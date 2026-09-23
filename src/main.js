@@ -224,7 +224,7 @@ async function start() {
       if (s && s.kind === 'waiting') patchWatch.reset();
       send('status', s);
     },
-    onPending: (row) => { spoken.saw(row.text); itsMe(row); send('pending', withFace(row)); },
+    onPending: (row) => { spoken.saw(row.text); traceSayInto('line'); itsMe(row); send('pending', withFace(row)); },
     onLayout,
     // No key of the player's own: the hosted translator does the asking.
     ...(hostedOn() ? { translate: (batch) => hosted.translate(batch) } : {}),
@@ -256,7 +256,7 @@ async function start() {
       if (!win || win.isDestroyed() || hidden) return;
       if (on) win.showInactive(); else win.hide();
     },
-    onResult: (row) => { spoken.saw(row.text); itsMe(row); send('line', withFace(row)); },
+    onResult: (row) => { spoken.saw(row.text); traceSayInto('line'); itsMe(row); send('line', withFace(row)); },
   });
 }
 
@@ -305,12 +305,25 @@ let beat = null;
 function heartbeat(on) {
   if (beat) { clearInterval(beat); beat = null; }
   if (!on || !hostedOn()) return;
-  hosted.ping();
-  beat = setInterval(() => hosted.ping(), 60000);
+  const ping = () => hosted.ping().then((versions) => { if (versions) sayIt.learn(versions); });
+  ping();
+  beat = setInterval(ping, 60000);
   beat.unref?.();
 }
 
 const spoken = createLanguageTracker({ fallback: THEIRS.includes(cfg.theirLanguage) ? cfg.theirLanguage : 'Russian' });
+// DT_DEBUG only: which language Ctrl+Enter would write NOW, printed when it
+// changes and after every settings click - how the language switches are
+// tested end to end without a game (Ctrl+Enter itself needs Dota in front).
+let lastSayInto = '';
+function traceSayInto(why, force = false) {
+  if (!DEBUG) return;
+  const into = targetLanguage(cfg.replyLanguage, spoken);
+  if (!force && into === lastSayInto) return;
+  lastSayInto = into;
+  console.log(new Date().toISOString().slice(11, 23), 'say-into', JSON.stringify({ into, why, theirLanguage: cfg.theirLanguage, replyLanguage: cfg.replyLanguage, scripts: cfg.scripts }));
+}
+traceSayInto('start', true);
 // What has been said before is said the same way again: said.json, beside
 // the settings, English -> what was sent. The player can read and correct it.
 const SAID_PATH = path.join(DATA_DIR, 'said.json');
@@ -571,6 +584,7 @@ function applySettings(patch) {
 ipcMain.handle('setup:sayInto', (_e, which) => {
   const patch = settingsPatch({ sayInto: which }, cfg);
   if (Object.keys(patch).length) { saveConfig(patch); Object.assign(cfg, patch); }
+  traceSayInto('setup:sayInto', true);
   return { sayInto: uiSettings(cfg).sayInto };
 });
 ipcMain.handle('setup:theirs', (_e, which) => {
@@ -580,6 +594,7 @@ ipcMain.handle('setup:theirs', (_e, which) => {
     spoken.choose(cfg.theirLanguage);
     if (patch.scripts) restartWatcher();
   }
+  traceSayInto('setup:theirs', true);
   return uiSettings(cfg);
 });
 ipcMain.handle('setup:update', () => { lookForUpdate(); return updateState; });
@@ -599,6 +614,7 @@ ipcMain.handle('setup:save', async (_e, payload) => {
   if (!typed) {
     saveConfig({ display, ...patch });
     const restart = applySettings(patch);
+    traceSayInto('setup:save', true);
     applyDisplay(display);
     if (restart) restartWatcher();
     return { ok: true, checked: false };

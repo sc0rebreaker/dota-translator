@@ -2061,3 +2061,40 @@ ok('choosing their language wins over a line seen before, and keeps the window o
   assert.deepEqual(p.scripts, order.filter((id) => ['cyrillic', 'han'].includes(id)));
   assert.ok(fs.readFileSync('src/setup.js', 'utf8').includes("$('sayNow').textContent = ''"));
 });
+ok('eight-language review fixes: the gates, the detector, Ukrainian and Persian, stale said.json lines, the notes', async () => {
+  const { scriptOf, createOutgoing } = await import('./src/outgoing.js');
+  // Korean shorthand is chat; laughter alone is not. Arabic digits alone are not.
+  assert.equal(needsTranslation('ㅈㅅ', ['hangul']), true);
+  assert.equal(needsTranslation('ㄱㄱ', ['hangul']), true);
+  assert.equal(needsTranslation('ㅋㅋㅋㅋ', ['hangul']), false);
+  assert.equal(needsTranslation('ㅠㅠ', ['hangul']), false);
+  assert.equal(needsTranslation('미드 와드 좀', ['hangul']), true);
+  assert.equal(needsTranslation('٢٥', ['arabic']), false);
+  assert.equal(needsTranslation('why؟', ['arabic']), false);
+  assert.equal(needsTranslation('روحوا ميد', ['arabic']), true);
+  // The detector: misses fixed, false alarms gone, Arabizi never Spanish.
+  for (const s of ['atras atras', 'aegis se acaba en 2 min, pusheen ya', 'deja de fedear', 'matenlo', 'defiendan la base', 'no me dejen solo', 'pusheen top', 'hagan smoke', 'sigan sigan', 'retirense', 'mejor farmeen', 'apurense', 'pongan wards', 'q haces wey', 'pusheen t2'])
+    assert.equal(looksSpanish(s), true, 'Spanish: ' + s);
+  for (const e of ['dodge his q', 'use q on him', 'q then ult', 'max q first', "i've no mana", 'xd', 'ta mate', 'back back', 'wallah el feeder da 7aywan', 'el carry da 7mar awy', 'yalla ta3alo mid'])
+    assert.equal(looksSpanish(e), false, 'not Spanish: ' + e);
+  // Ctrl+Enter answers Ukrainian in Ukrainian and Persian in Persian.
+  assert.equal(scriptOf('допоможіть на міді'), 'ukrainian');
+  assert.equal(scriptOf('помогите на миду'), 'cyrillic');
+  assert.equal(scriptOf('داداش برو پایین کمک'), 'persian');
+  assert.equal(scriptOf('روحوا ميد'), 'arabic');
+  // said.json: a hosted line carries its prompt version and is asked again when the server's version moves on.
+  let saved = { 'Russian|hi': { out: 'старое', v: 'aaaaaaaa' }, 'Russian|by hand': 'как я написал', '#versions': { Russian: 'aaaaaaaa' } };
+  let asked = 0;
+  const say = createOutgoing({ store: { read: () => saved, write: (a) => { saved = a; } }, remote: () => async () => { asked++; return { out: 'привет', v: 'bbbbbbbb' }; } });
+  assert.equal((await say('hi', 'Russian')).out, 'старое');                    // still current
+  say.learn({ Russian: 'bbbbbbbb' });
+  assert.equal((await say('hi', 'Russian')).out, 'привет');                    // stale: asked again
+  assert.equal(asked, 1);
+  assert.equal((await say('by hand', 'Russian')).out, 'как я написал');        // a corrected line is kept
+  assert.deepEqual(saved['Russian|hi'], { out: 'привет', v: 'bbbbbbbb' });
+  assert.equal(saved['Russian|by hand'], 'как я написал');
+  assert.equal(saved['#versions'].Russian, 'bbbbbbbb');
+  // The "Saved." notes sit under their own blocks, not by Close.
+  const html = fs.readFileSync('src/setup.html', 'utf8');
+  assert.ok(html.includes('id="displayNow"') && html.includes('id="moreNow"') && !html.includes('id="savedNow"'));
+});
