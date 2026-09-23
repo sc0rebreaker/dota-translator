@@ -22,6 +22,7 @@ function fill(s) {
   for (const id of ['showOriginal', 'showHeroes', 'autoUpdate']) $(id).checked = Boolean(s.settings[id]);
   const into = document.querySelector(`input[name=sayInto][value="${s.settings.sayInto === 'english' ? 'english' : 'theirs'}"]`);
   if (into) into.checked = true;
+  showTheirs(s.settings.theirLanguage);
   $('fontSize').value = s.settings.fontSize; $('fontSizeOut').textContent = s.settings.fontSize + 'px';
 }
 const settingsNow = () => ({
@@ -30,11 +31,28 @@ const settingsNow = () => ({
   fontSize: Number($('fontSize').value),
   sayInto: document.querySelector('input[name=sayInto]:checked').value,
 });
+// Their language, in every label that names it.
+function showTheirs(lang) {
+  const t = document.querySelector(`input[name=theirs][value="${lang}"]`);
+  if (t) t.checked = true;
+  for (const el of document.querySelectorAll('i.L')) el.textContent = lang;
+}
+for (const r of document.querySelectorAll('input[name=theirs]')) {
+  r.addEventListener('change', async () => {
+    const now = await window.setup.theirs(r.value);
+    showTheirs(now.theirLanguage);
+    $('theirsNow').textContent = 'Saved: ' + now.theirLanguage + '.';
+    // The languages list in More settings changed with it.
+    for (const box of LANGS.querySelectorAll('input')) box.checked = now.scripts.includes(box.value);
+    window.setup.fit();
+  });
+}
 // Applied at once - this one does not wait for Save.
 for (const r of document.querySelectorAll('input[name=sayInto]')) {
   r.addEventListener('change', async () => {
     const now = await window.setup.sayInto(r.value);
-    $('sayNow').textContent = now.sayInto === 'english' ? 'Saved: Russian → English.' : 'Saved: English → Russian.';
+    const L = document.querySelector('input[name=theirs]:checked').value;
+    $('sayNow').textContent = now.sayInto === 'english' ? 'Saved: ' + L + ' → English.' : 'Saved: English → ' + L + '.';
     window.setup.fit();
   });
 }

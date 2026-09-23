@@ -1107,7 +1107,7 @@ ok('what the settings window sends back is made safe before it is saved', () => 
 
 ok('the window is shown the five settings and never the key', () => {
   const shown = uiSettings({ ...mergeConfig({}), geminiApiKey: 'secret', geminiApiKeyEnc: 'c2VjcmV0' });
-  assert.deepEqual(Object.keys(shown).sort(), ['autoUpdate', 'fontSize', 'sayInto', 'scripts', 'showHeroes', 'showOriginal']);
+  assert.deepEqual(Object.keys(shown).sort(), ['autoUpdate', 'fontSize', 'sayInto', 'scripts', 'showHeroes', 'showOriginal', 'theirLanguage']);
   assert.ok(!JSON.stringify(shown).includes('secret'));
   // Which way Ctrl+Enter translates: two choices, and a language somebody
   // set by name in config.json is "theirs" and is not flattened by a save.
@@ -1119,7 +1119,7 @@ ok('the window is shown the five settings and never the key', () => {
   assert.deepEqual(settingsPatch({ sayInto: 'theirs' }, { replyLanguage: 'auto' }), {});
   assert.deepEqual(settingsPatch({ sayInto: 'klingon' }, { replyLanguage: 'auto' }), {});
   // Every language it offers is one the reader really knows.
-  const { SCRIPTS } = { SCRIPTS: ['cyrillic', 'greek', 'han', 'hangul', 'arabic', 'thai'] };
+  const { SCRIPTS } = { SCRIPTS: ['cyrillic', 'greek', 'han', 'hangul', 'arabic', 'thai', 'spanish'] };
   assert.deepEqual(LANGUAGES.map(([id]) => id).sort(), [...SCRIPTS].sort());
   assert.equal(LANGUAGES[0][1], 'Russian');
 });
@@ -2011,3 +2011,29 @@ ok('gsi mode reads no memory: nothing of it opens the game, reads it, or starts 
 }
 
 console.log('\n' + passed + ' passed');
+
+// ---- Spanish: the one language told apart by its WORDS, not its script ----
+const { looksSpanish } = await import('./src/spanish.js');
+ok('Spanish chat is Spanish, English chat is not, and a doubtful line is left alone', () => {
+  const spanish = ['hola', 'vamos mid', 'que haces', 'q haces wey', 'ayuda abajo', 'cuidado vienen', 'jajaja manco', 'puta madre', 'no se q hacer', 'vamo a ganar', 'tira la torre', 'el pudge esta abajo', 'compren wards porfa', 'ya voy', 'nadie ayuda', 'gracias bro', 'ese sniper es malo', 'dale rosh', 'estoy muerto', 'vayan top', 'ptm este juego', 'están abajo', '¿donde estan?'];
+  const english = ['go mid', 'gg wp', 'ss mid', 'care top', 'buy wards pls', 'no', 'report pudge', 'lol', 'we need rosh', 'push bot', 'what are you doing', 'im back', 'nice one', 'ok', 'y u no help', 'a', 'la la la', 'mid me', 'bro wtf', 'ez', 'come bot', 'wait for me', 'they are top', 'gank mid pls', 'feed', 'noob team'];
+  for (const s of spanish) assert.equal(looksSpanish(s), true, 'Spanish: ' + s);
+  for (const e of english) assert.equal(looksSpanish(e), false, 'English: ' + e);
+  assert.equal(needsTranslation('vamos mid', ['spanish']), true);
+  assert.equal(needsTranslation('vamos mid', ['cyrillic']), false);
+  assert.equal(needsTranslation('го мид', ['spanish', 'cyrillic']), true);
+});
+ok('their language: the setting switches the script on, relabels the direction, and the tracker starts from it', async () => {
+  const { createLanguageTracker } = await import('./src/outgoing.js');
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Spanish' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Spanish', scripts: ['spanish', 'cyrillic', 'han'] });
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Russian' }, { theirLanguage: 'Spanish', scripts: ['spanish', 'cyrillic'] }), { theirLanguage: 'Russian' });
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Klingon' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] }), {});
+  assert.equal(uiSettings({ theirLanguage: 'Spanish' }).theirLanguage, 'Spanish');
+  assert.equal(uiSettings({}).theirLanguage, 'Russian');
+  const t = createLanguageTracker({ fallback: 'Spanish' });
+  assert.equal(t.language, 'Spanish');
+  t.saw('vamos mid'); assert.equal(t.language, 'Spanish');
+  t.saw('го мид'); assert.equal(t.language, 'Russian');
+  t.fallback = 'Russian'; t.saw('hello'); assert.equal(t.language, 'Russian');
+  assert.ok(fs.readFileSync('src/setup.html', 'utf8').includes('name="theirs"'));
+});

@@ -73,6 +73,7 @@
   .actions .grow { flex: 1; }
   .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); margin-right: 8px; vertical-align: 1px; }
   .dot.ok { background: var(--good); } .dot.wait { background: var(--accent); } .dot.bad { background: var(--warn); }
+  i.L { font-style: inherit; }
   .trust { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12.5px; }
 </style>
 </head>
@@ -87,10 +88,19 @@
   </div>
 
   <div class="sayblock">
+    <h3>Your teammates write</h3>
+    <div class="mode say">
+      <label><input type="radio" name="theirs" value="Russian" checked><span><b>Russian</b>EU servers</span></label>
+      <label><input type="radio" name="theirs" value="Spanish"><span><b>Spanish</b>US servers</span></label>
+    </div>
+    <p class="hint">Their chat is shown in English either way; this decides which language is picked out of the chat and which one Ctrl+Enter writes. <span id="theirsNow" style="color: var(--good)"></span></p>
+  </div>
+
+  <div class="sayblock">
     <h3>Your own messages: Ctrl+Enter in Dota's chat translates them</h3>
     <div class="mode say">
-      <label><input type="radio" name="sayInto" value="theirs" checked><span><b>English &rarr; Russian</b>You type English, they read Russian</span></label>
-      <label><input type="radio" name="sayInto" value="english"><span><b>Russian &rarr; English</b>You type Russian, they read English</span></label>
+      <label><input type="radio" name="sayInto" value="theirs" checked><span><b>English &rarr; <i class="L">Russian</i></b>You type English, they read <i class="L">Russian</i></span></label>
+      <label><input type="radio" name="sayInto" value="english"><span><b><i class="L">Russian</i> &rarr; English</b>You type <i class="L">Russian</i>, they read English</span></label>
     </div>
     <p class="hint">Type in the game's chat as always, then press Ctrl+Enter instead of Enter. Plain Enter sends it exactly as you typed it. (If your teammates write Chinese, English goes to Chinese.) <span id="sayNow" style="color: var(--good)"></span></p>
   </div>

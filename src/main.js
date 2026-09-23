@@ -310,7 +310,7 @@ function heartbeat(on) {
   beat.unref?.();
 }
 
-const spoken = createLanguageTracker();
+const spoken = createLanguageTracker({ fallback: cfg.theirLanguage === 'Spanish' ? 'Spanish' : 'Russian' });
 // What has been said before is said the same way again: said.json, beside
 // the settings, English -> what was sent. The player can read and correct it.
 const SAID_PATH = path.join(DATA_DIR, 'said.json');
@@ -572,6 +572,15 @@ ipcMain.handle('setup:sayInto', (_e, which) => {
   const patch = settingsPatch({ sayInto: which }, cfg);
   if (Object.keys(patch).length) { saveConfig(patch); Object.assign(cfg, patch); }
   return { sayInto: uiSettings(cfg).sayInto };
+});
+ipcMain.handle('setup:theirs', (_e, which) => {
+  const patch = settingsPatch({ theirLanguage: which }, cfg);
+  if (Object.keys(patch).length) {
+    saveConfig(patch); Object.assign(cfg, patch);
+    spoken.fallback = cfg.theirLanguage;
+    if (patch.scripts) restartWatcher();
+  }
+  return uiSettings(cfg);
 });
 ipcMain.handle('setup:update', () => { lookForUpdate(); return updateState; });
 ipcMain.handle('setup:quitInstall', quitApp);

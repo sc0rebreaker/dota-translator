@@ -24,6 +24,7 @@ export const SCRIPT_LANGUAGE = {
   greek: 'Greek',
   arabic: 'Arabic',
   thai: 'Thai',
+  spanish: 'Spanish',       // last: a line with any other script is that script
 };
 
 export const MAX_SAY = 200;          // a chat line, not a letter
@@ -35,10 +36,13 @@ export function scriptOf(text) {
 
 /** Remembers what the others last wrote in. */
 export function createLanguageTracker({ fallback = 'Russian' } = {}) {
+  // The fallback is the language the player SAID their teammates write
+  // (theirLanguage in config), until somebody has written anything.
   let last = '';
   return {
+    fallback,
     saw(text) { const s = scriptOf(text); if (s) last = s; },
-    get language() { return SCRIPT_LANGUAGE[last] || fallback; },
+    get language() { return SCRIPT_LANGUAGE[last] || this.fallback; },
   };
 }
 

@@ -198,7 +198,8 @@ Plain `Enter` still sends exactly what you typed.
 | `model` | `gemini-3.5-flash-lite` by default |
 | `gsiPort` | the port on your own PC that Dota sends its feed to (47854) |
 | `gsiRowGrab` | name a speaker's hero from a small capture of the game's chat row and top bar. `false` captures nothing; other players are then shown by colour only (true) |
-| `scripts` | which writing systems to translate. `["cyrillic", "han"]` by default - Russian, which is what this is built for, and Chinese, because so many pasted voice lines are. `greek`, `hangul`, `arabic` and `thai` are also known |
+| `scripts` | which writing systems to translate. `["cyrillic", "han"]` by default - Russian, which is what this is built for, and Chinese, because so many pasted voice lines are. `spanish` (Latin American, US servers - told apart from English by its words, not its script), `greek`, `hangul`, `arabic` and `thai` are also known |
+| `theirLanguage` | `"Russian"` or `"Spanish"`: what your teammates write. The settings window's first choice; it switches that language on and is what Ctrl+Enter writes until somebody has typed anything |
 | `batchMs` | how long to gather lines before one call (80) |
 | `holdSeconds` | how long a line stays on screen (14) |
 | `fadeWithGame` | in `above` mode a translated line disappears when Dota's own line does, about 7 seconds after it is said, and `holdSeconds` is ignored. `false` keeps it for `holdSeconds` (true) |

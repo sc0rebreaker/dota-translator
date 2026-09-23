@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('setup', {
   fit: () => ipcRenderer.invoke('setup:fit'),
   folder: () => ipcRenderer.invoke('setup:folder'),
   sayInto: (which) => ipcRenderer.invoke('setup:sayInto', which),
+  theirs: (which) => ipcRenderer.invoke('setup:theirs', which),
   // Whether this copy is up to date, and a way to look now / install now.
   update: () => ipcRenderer.invoke('setup:update'),
   quitInstall: () => ipcRenderer.invoke('setup:quitInstall'),

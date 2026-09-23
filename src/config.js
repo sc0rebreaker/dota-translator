@@ -153,6 +153,10 @@ export const DEFAULTS = {
   // seen typing in, Russian until anything has been seen; or a language by
   // name ("Russian", "Ukrainian", "Chinese").
   replyLanguage: 'auto',
+  // What the people on the player's servers write: Russian (EU) or Spanish
+  // (US). It picks which languages are read and which Ctrl+Enter goes into
+  // until a line has been seen. The setup window's first choice.
+  theirLanguage: 'Russian',
   // Where the tray's "Report a problem..." goes. Blank is the project's
   // GitHub issue chooser.
   feedbackUrl: '',

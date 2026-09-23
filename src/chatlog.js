@@ -10,10 +10,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { spanish } from './spanish.js';
 
 // Which scripts count as "not something I can read". Cyrillic is the one
 // that matters here; the others are there so the config can widen it
 // without a code change.
+// Spanish is not a script - it shares ours - so it is a word test (spanish.js)
+// with the same `.test` face as the regular expressions.
 export const SCRIPTS = {
   cyrillic: /[\u0400-\u04FF]/,
   greek: /[\u0370-\u03FF]/,
@@ -21,6 +24,7 @@ export const SCRIPTS = {
   hangul: /[\uAC00-\uD7AF]/,
   arabic: /[\u0600-\u06FF]/,
   thai: /[\u0E00-\u0E7F]/,
+  spanish,
 };
 
 export function needsTranslation(text, scripts = ['cyrillic']) {

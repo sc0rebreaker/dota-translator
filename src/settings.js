@@ -13,6 +13,7 @@ import { SCRIPTS } from './chatlog.js';
 // In the order the window lists them. Russian first: it is what this is for.
 export const LANGUAGES = [
   ['cyrillic', 'Russian'],
+  ['spanish', 'Spanish (Latin American, on US servers)'],
   ['han', 'Chinese'],
   ['hangul', 'Korean'],
   ['greek', 'Greek'],
@@ -20,6 +21,8 @@ export const LANGUAGES = [
   ['thai', 'Thai'],
 ];
 
+export const THEIRS = ['Russian', 'Spanish'];
+const THEIR_SCRIPT = { Russian: 'cyrillic', Spanish: 'spanish' };
 const isEnglish = (s) => String(s || '').trim().toLowerCase() === 'english';
 
 /** What the window is shown: only these, never the key. */
@@ -32,6 +35,7 @@ export function uiSettings(cfg) {
     autoUpdate: cfg.autoUpdate !== false,
     // Which way Ctrl+Enter in Dota's chat translates what the player typed.
     sayInto: isEnglish(cfg.replyLanguage) ? 'english' : 'theirs',
+    theirLanguage: THEIRS.includes(cfg.theirLanguage) ? cfg.theirLanguage : 'Russian',
   };
 }
 
@@ -54,6 +58,15 @@ export function settingsPatch(raw, cfg = {}) {
   // Two choices in the window, and a third kept out of their way: a language
   // set BY NAME in config.json ("Ukrainian") is somebody's own choice of
   // "their language", and saving the window must not flatten it to auto.
+  // Their language: one of two, and the language's script is switched on
+  // with it (the other one is left as it was - a player on both servers
+  // can keep both ticked).
+  if (THEIRS.includes(raw.theirLanguage) && raw.theirLanguage !== cfg.theirLanguage) {
+    patch.theirLanguage = raw.theirLanguage;
+    const have = patch.scripts || cfg.scripts || [];
+    const need = THEIR_SCRIPT[raw.theirLanguage];
+    if (!have.includes(need)) patch.scripts = [need, ...have];
+  }
   if (raw.sayInto === 'english') patch.replyLanguage = 'English';
   else if (raw.sayInto === 'theirs' && isEnglish(cfg.replyLanguage)) patch.replyLanguage = 'auto';
   const size = Number(raw.fontSize);
