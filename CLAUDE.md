@@ -2386,6 +2386,14 @@ with a slider. What was built, and the rules it follows:
     FRESH made-up id against production, which the server repo's notes
     forbid: today's player count there is one too high.** Re-run demo lines
     with the fixed test id those notes name, or a sandbox.
+  - **Every translated row carries its original** (the user: the newest line
+    had no "(...)"; the Russian page never had it on the fourth row, which
+    was too long to take one). The Russian fourth line is now "бб есть? идём
+    хг" -> "bb up? lets go high ground" (real output; asked under the SAME
+    demo id, already counted that day, so no new fake player). MEASURED in
+    headless Edge, 320-1440: every row fits, tightest Russian's third at
+    12px. The test holds each language's four `.o` to the WITHOUT half, word
+    for word (control: the old page fails it, 3 of 4).
   - A review workflow (fidelity to the recorded answers, native-speaker
     naturalness, code, claims vs the app) found one real fault, fixed: the
     copy said Ctrl+Enter and the tracker work out Spanish from the chat by
