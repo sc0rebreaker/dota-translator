@@ -157,6 +157,7 @@ const mark = (s) => { let h = 2166136261; for (const c of String(s)) { h ^= c.co
 export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize = 500, store = null, remote = null } = {}) {
   const cache = new Map();
   let latest = {};
+  let broken = false;
   if (store) {
     try {
       const was = store.read();
@@ -174,10 +175,14 @@ export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize
           }
         }
       }
-    } catch { /* no file yet, or not JSON: start afresh */ }
+    } catch (err) {
+      // No file yet: start afresh. A file that is THERE but will not parse
+      // (a hand edit gone wrong) is left alone - never written over.
+      if (!(err && err.code === 'ENOENT')) broken = true;
+    }
   }
   const keep = () => {
-    if (!store) return;
+    if (!store || broken) return;
     const all = {};
     for (const [k, e] of cache) all[k] = e.v ? { out: e.out, v: e.v, h: mark(e.out) } : e.out;
     all[VERSIONS] = latest;
@@ -198,7 +203,11 @@ export function createOutgoing({ apiKey, model, ask = askGeminiHedged, cacheSize
     const hosted = remote ? remote() : null;
     let out, v = '';
     if (hosted) {
-      const r = await hosted(clean, language);
+      let r;
+      // A stale line is still better than nothing: if the server cannot answer
+      // now, the old line is said (a review, 2026-09-23).
+      try { r = await hosted(clean, language); } catch (err) { if (had) return { out: had.out, language, cached: true }; throw err; }
+      if (!(r && (typeof r === 'string' ? r.trim() : r.out)) && had) return { out: had.out, language, cached: true };
       out = tidyOut(typeof r === 'string' ? r : r && r.out);
       v = r && typeof r.v === 'string' ? r.v : '';
       if (v) latest[language] = v;

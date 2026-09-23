@@ -1431,7 +1431,7 @@ await okAsync('a repeat costs no call, and a failure is not remembered', async (
 
 await okAsync('what was said once is said the same way after a restart, and the file can be corrected by hand', async () => {
   let disk = null, calls = 0;
-  const store = { read: () => { if (!disk) throw new Error('no file'); return JSON.parse(disk); }, write: (all) => { disk = JSON.stringify(all); } };
+  const store = { read: () => { if (!disk) throw Object.assign(new Error('no file'), { code: 'ENOENT' }); return JSON.parse(disk); }, write: (all) => { disk = JSON.stringify(all); } };
   const answers = ['хорошая игра', 'найс плей'];               // the model, asked twice, says two things
   const ask = async () => JSON.stringify({ out: answers[calls++] });
   assert.equal((await createOutgoing({ apiKey: 'k', ask, store })('nice play', 'Russian')).out, 'хорошая игра');
@@ -2122,4 +2122,19 @@ ok('review round 2: legacy said.json lines asked once more, hand edits kept, Per
   for (const e of ["that's sus", "don't feed pls", 'wallah el feeder da 7aywan']) assert.equal(looksSpanish(e), false, e);
   // Korean laughter with ;; costs no call either.
   assert.equal(needsTranslation('ㅋㅋㅋ;;', ['hangul']), false);
+});
+ok('review round 3: exact Spanish ordinals, Spanish marks only, pa\'l, a broken said.json is never overwritten, a stale line is the fallback', async () => {
+  const { createOutgoing } = await import('./src/outgoing.js');
+  for (const s of ['defiendan la 2da torre', 'vamos a la 3er torre', "vamos pa'l mid", "pa'lante todos", 'wallah ¿donde estan?']) assert.equal(looksSpanish(s), true, s);
+  for (const e of ['ya 3mo el carry 5ra', 'el 2na mid', 'khalas el feeder é nul']) assert.equal(looksSpanish(e), false, e);
+  // A said.json that is there but will not parse is left alone, even when the heartbeat teaches a version.
+  let writes = 0;
+  const broken = createOutgoing({ store: { read: () => { throw new SyntaxError('Unexpected token'); }, write: () => { writes++; } } });
+  broken.learn({ Russian: 'eeeeeeee' });
+  assert.equal(writes, 0);
+  // A stale line is said when the server cannot answer.
+  let saved = { 'Russian|hi': { out: 'старое', v: 'aaaaaaaa' }, '#versions': { Russian: 'bbbbbbbb' } };
+  const down = createOutgoing({ store: { read: () => saved, write: (a) => { saved = a; } }, remote: () => async () => { throw new Error('http 502'); } });
+  assert.equal((await down('hi', 'Russian')).out, 'старое');
+  await assert.rejects(down('never said', 'Russian'));
 });

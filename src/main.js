@@ -330,7 +330,7 @@ const SAID_PATH = path.join(DATA_DIR, 'said.json');
 const sayIt = createOutgoing({
   apiKey: () => cfg.geminiApiKey, model: cfg.model,
   remote: () => (hostedOn() ? (text, into) => hosted.say(text, into) : null),
-  store: { read: () => JSON.parse(fs.readFileSync(SAID_PATH, 'utf8')), write: (all) => fs.writeFileSync(SAID_PATH, JSON.stringify(all, null, 2)) },
+  store: { read: () => JSON.parse(fs.readFileSync(SAID_PATH, 'utf8').replace(/^\uFEFF/, '')), write: (all) => fs.writeFileSync(SAID_PATH, JSON.stringify(all, null, 2)) },
 });
 const keys = createKeySender();
 let sayKeyOn = false;
@@ -518,7 +518,12 @@ async function fitSetup() {
     if (process.env.DT_SHOT_MORE && !fitSetup.opened) { fitSetup.opened = true; setupWin.webContents.executeJavaScript('document.getElementById("more").open = true'); return; }
     if (process.env.DT_SHOT) setTimeout(async () => { try { fs.writeFileSync(process.env.DT_SHOT, (await setupWin.webContents.capturePage()).toPNG()); } catch { /* closed */ } }, 600);
     if (DEBUG) console.log('setup window: page needs', want, 'screen allows', room, '-> content', setupWin.getContentSize().join('x'));
-    setupWin.center();
+    // Centred when it opens; after that it stays where the player put it,
+    // only nudged back up if it grew past the bottom of the screen.
+    if (!setupWin.placed) { setupWin.center(); setupWin.placed = true; } else {
+      const b = setupWin.getBounds(), area = screen.getDisplayMatching(b).workArea;
+      if (b.y + b.height > area.y + area.height) setupWin.setBounds({ ...b, y: Math.max(area.y, area.y + area.height - b.height) });
+    }
   } catch { /* closed meanwhile */ }
 }
 ipcMain.handle('setup:fit', fitSetup);

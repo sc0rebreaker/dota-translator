@@ -69,18 +69,30 @@ const SPANISH_VERB = /^(push|farm|gank|feed|fed|stack)(e|ea|ean|een|ear|eo|eas|e
 const ARABIZI_WORDS = new Set(['wallah', 'walah', 'yalla', 'yallah', 'khalas', 'ya3ni', 'inshallah']);
 // Numbered things that are not Arabizi: towers, levels, 1v1, timings, Spanish
 // ordinals (2da, 3er, 5to), dota2, and the 7u7 face (a review, 2026-09-23).
-const DOTA_NUMBERED = /^(t[1-4]|lvl?\d+|x\d+|\d+x|\d+v\d+|\d+(min|m|s|k|seg|sec|hs|h)?|\d+(do|da|ro|ra|er|to|ta|vo|va|no|na|mo|ma)|dota\d|\d+u\d+)$/;
-const arabizi = (w) => ARABIZI_WORDS.has(w) || (/[a-z]/.test(w) && /[23579]/.test(w) && !DOTA_NUMBERED.test(w));
+const DOTA_NUMBERED = /^(t[1-4]|lvl?\d+|x\d+|\d+x|\d+v\d+|\d+(min|m|s|k|seg|sec|hs|h)?|dota\d|\d+u\d+)$/;
+// Spanish ordinals, exactly: 1ro 2da 3er 4to ... 10mo - not any digit with any
+// ending, which let Arabizi words through (3mo, 5ra, 2na: a review, 2026-09-23).
+const ORDINAL = /^(?:[13](?:ro|ra|er|ero|era)|2(?:do|da)|[456](?:to|ta)|7(?:mo|ma)|8(?:vo|va)|9(?:no|na)|10(?:mo|ma))$/;
+const arabizi = (w) => ARABIZI_WORDS.has(w) || (/[a-z]/.test(w) && /[23579]/.test(w) && !DOTA_NUMBERED.test(w) && !ORDINAL.test(w));
+// Only Spanish's OWN marks outweigh an Arabizi word: accents are French too.
+const SPANISH_MARKS = /[\u00f1\u00d1\u00bf\u00a1]/;
+// An English contraction (that's, don't, i've); a Spanish elision (pa'l) is not one.
+const CONTRACTION = /^[a-z]+'(s|t|re|ve|ll|d|m)$/;
 
 export function looksSpanish(text) {
   const t = String(text || '');
   if (!t.trim()) return false;
   const ws = words(t);
   // Spanish's own letters (ñ ¿ ¡ accents) outweigh an Arabizi-looking word.
-  if (!SPANISH_ONLY.test(t) && ws.some(arabizi)) return false;
+  if (!SPANISH_MARKS.test(t) && ws.some(arabizi)) return false;
   let es = 0, en = 0;
   // A contraction (that's, don't) is English: Spanish is typed with no apostrophes.
-  for (const w of ws) { if (w.includes("'")) en++; else if (SPANISH.has(w) || SPANISH_VERB.test(w)) es += WEAK.has(w) ? 0.5 : 1; else if (ENGLISH.has(w)) en++; }
+  for (const raw of ws) {
+    if (CONTRACTION.test(raw)) { en++; continue; }
+    const w = raw.replace(/'/g, '');
+    if (SPANISH.has(w) || SPANISH_VERB.test(w) || w === 'pal' || w === 'palante') es += WEAK.has(w) ? 0.5 : 1;
+    else if (ENGLISH.has(w)) en++;
+  }
   if (SPANISH_ONLY.test(t)) es += 2;
   // A line with no English word and any Spanish one is Spanish - that is
   // where "hola" and "vamos" live. A mixed line has to be MORE Spanish
