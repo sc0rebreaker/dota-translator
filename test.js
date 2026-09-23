@@ -1317,6 +1317,11 @@ await okAsync('the landing page offers exactly the languages the app does, and i
     const said = [...blocks[0].matchAll(/<span(?: lang="[a-zA-Z-]+")?>([^<]+)<[/]span><[/]div>/g)].map((m) => m[1]);
     assert.equal(said.length, 4, name + ': four lines said');
     for (const line of said) assert.ok(needsTranslation(line, [script]), name + ': the app would not translate "' + line + '"');
+    // The WITH half shows every line as the app does, `english (what was
+    // said)`: each of the four carries its original, word for word (the user,
+    // 2026-09-23: the newest line had lost its brackets).
+    const originals = [...blocks[1].matchAll(/<span class="o"(?: lang="[a-zA-Z-]+")?>[(]([^<]+)[)]<[/]span>/g)].map((m) => m[1]);
+    assert.deepEqual(originals, said, name + ': a translated line without its original, or with a different one');
   }
   // The tab the page OPENS on is a guess from the visitor's time zone (the
   // user asked for it): the Americas Spanish, South-East Asia and Oceania
