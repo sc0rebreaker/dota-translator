@@ -577,7 +577,7 @@ ipcMain.handle('setup:theirs', (_e, which) => {
   const patch = settingsPatch({ theirLanguage: which }, cfg);
   if (Object.keys(patch).length) {
     saveConfig(patch); Object.assign(cfg, patch);
-    spoken.fallback = cfg.theirLanguage;
+    spoken.choose(cfg.theirLanguage);
     if (patch.scripts) restartWatcher();
   }
   return uiSettings(cfg);

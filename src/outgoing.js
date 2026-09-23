@@ -43,6 +43,10 @@ export function createLanguageTracker({ fallback = 'Russian' } = {}) {
     fallback,
     saw(text) { const s = scriptOf(text); if (s) last = s; },
     get language() { return SCRIPT_LANGUAGE[last] || this.fallback; },
+    // The player just said what their teammates write: that wins over a line
+    // seen before (a review, 2026-09-23: a Russian line seen in an EU game
+    // kept Ctrl+Enter in Russian after Chinese was chosen for SEA).
+    choose(language) { this.fallback = language; last = ''; },
   };
 }
 

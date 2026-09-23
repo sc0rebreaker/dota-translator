@@ -2025,7 +2025,7 @@ ok('Spanish chat is Spanish, English chat is not, and a doubtful line is left al
 });
 ok('their language: the setting switches the script on, relabels the direction, and the tracker starts from it', async () => {
   const { createLanguageTracker } = await import('./src/outgoing.js');
-  assert.deepEqual(settingsPatch({ theirLanguage: 'Spanish' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Spanish', scripts: ['spanish', 'cyrillic', 'han'] });
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Spanish' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Spanish', scripts: ['cyrillic', 'spanish', 'han'] });
   assert.deepEqual(settingsPatch({ theirLanguage: 'Russian' }, { theirLanguage: 'Spanish', scripts: ['spanish', 'cyrillic'] }), { theirLanguage: 'Russian' });
   assert.deepEqual(settingsPatch({ theirLanguage: 'Klingon' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] }), {});
   assert.equal(uiSettings({ theirLanguage: 'Spanish' }).theirLanguage, 'Spanish');
@@ -2039,7 +2039,7 @@ ok('their language: the setting switches the script on, relabels the direction, 
 });
 ok('Chinese for SEA servers: the third choice switches han on, relabels, and the tracker starts from it', async () => {
   const { createLanguageTracker } = await import('./src/outgoing.js');
-  assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] }), { theirLanguage: 'Chinese', scripts: ['han', 'cyrillic'] });
+  assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] }), { theirLanguage: 'Chinese', scripts: ['cyrillic', 'han'] });
   assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Chinese' });
   assert.equal(uiSettings({ theirLanguage: 'Chinese' }).theirLanguage, 'Chinese');
   const t = createLanguageTracker({ fallback: 'Chinese' });
@@ -2048,4 +2048,16 @@ ok('Chinese for SEA servers: the third choice switches han on, relabels, and the
   const html = fs.readFileSync('src/setup.html', 'utf8');
   assert.ok(html.includes('value="Chinese"') && html.includes('SEA servers'));
   assert.ok(needsTranslation('中单 别送了', ['han']));
+});
+ok('choosing their language wins over a line seen before, and keeps the window order of scripts', async () => {
+  const { createLanguageTracker } = await import('./src/outgoing.js');
+  const t = createLanguageTracker({ fallback: 'Russian' });
+  t.saw('го мид'); assert.equal(t.language, 'Russian');
+  t.choose('Chinese'); assert.equal(t.language, 'Chinese');          // the Russian line no longer decides
+  t.saw('推塔'); assert.equal(t.language, 'Chinese');
+  t.choose('Spanish'); assert.equal(t.language, 'Spanish');
+  const p = settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] });
+  const order = LANGUAGES.map(([id]) => id);
+  assert.deepEqual(p.scripts, order.filter((id) => ['cyrillic', 'han'].includes(id)));
+  assert.ok(fs.readFileSync('src/setup.js', 'utf8').includes("$('sayNow').textContent = ''"));
 });

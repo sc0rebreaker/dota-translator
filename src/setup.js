@@ -36,6 +36,8 @@ function showTheirs(lang) {
   const t = document.querySelector(`input[name=theirs][value="${lang}"]`);
   if (t) t.checked = true;
   for (const el of document.querySelectorAll('i.L')) el.textContent = lang;
+  // A note saying the OLD language would contradict the labels.
+  if ($('sayNow').textContent) $('sayNow').textContent = '';
 }
 for (const r of document.querySelectorAll('input[name=theirs]')) {
   r.addEventListener('change', async () => {

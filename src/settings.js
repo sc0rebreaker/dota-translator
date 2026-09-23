@@ -68,7 +68,9 @@ export function settingsPatch(raw, cfg = {}) {
     patch.theirLanguage = raw.theirLanguage;
     const have = patch.scripts || cfg.scripts || [];
     const need = THEIR_SCRIPT[raw.theirLanguage];
-    if (!have.includes(need)) patch.scripts = [need, ...have];
+    // In the window's own order: a list in another order reads as "the
+    // languages changed" at the next save and restarts the reader for nothing.
+    if (!have.includes(need)) patch.scripts = LANGUAGES.map(([id]) => id).filter((id) => id === need || have.includes(id));
   }
   if (raw.sayInto === 'english') patch.replyLanguage = 'English';
   else if (raw.sayInto === 'theirs' && isEnglish(cfg.replyLanguage)) patch.replyLanguage = 'auto';
