@@ -2394,6 +2394,20 @@ with a slider. What was built, and the rules it follows:
     in RUSSIAN until Spanish is picked under "Your teammates write". Chinese
     works out of the box. The page now says to pick it once; the slider's
     caption says the app asks the first time it starts.
+  - **The page OPENS on a tab guessed from the visitor's time zone** (the
+    user: "yes, I want it", same evening): `America/*` (and US/, Canada/,
+    Brazil/, Chile/, Mexico/, Pacific/Honolulu) Spanish - US and South
+    American servers; the SEA capitals' zones, `Australia/*` and
+    Pacific/Auckland Chinese - SEA; everybody else, mainland China included,
+    Russian. `Intl` only: nothing is sent. The tab code is an inline script
+    right after the slider, so it runs while the page is parsed, before the
+    fonts' stylesheet lets it paint. A click always wins; no JS = Russian. A
+    test pulls `theirsFor` out of the page and checks 24 zones. SEEN in
+    headless Edge with CDP's `Emulation.setTimezoneOverride`: New York and
+    Lima open on Spanish, Manila and Sydney on Chinese, Tallinn on Russian,
+    clicks still switch, no console errors. A GUESS: Brazilians get Spanish
+    (their SA servers mix in Peru and Chile); Australians get Chinese (many
+    queue SEA). NOT measured whether a first paint can show the wrong word.
   - SEEN: headless Edge renders (CDP, 375 and 1280, each tab) and the pane
     at 1280; NOT seen on a real phone. Pre-existing, NOT fixed: at 320px the
     nav's "Download free" button pushes the page 27px sideways.

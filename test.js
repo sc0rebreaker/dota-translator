@@ -1318,6 +1318,22 @@ await okAsync('the landing page offers exactly the languages the app does, and i
     assert.equal(said.length, 4, name + ': four lines said');
     for (const line of said) assert.ok(needsTranslation(line, [script]), name + ': the app would not translate "' + line + '"');
   }
+  // The tab the page OPENS on is a guess from the visitor's time zone (the
+  // user asked for it): the Americas Spanish, South-East Asia and Oceania
+  // Chinese, everybody else Russian. The guess is taken out of the page itself.
+  const src = html.split('const theirsFor = ')[1];
+  assert.ok(src, 'the time-zone guess is not on the page');
+  const theirsFor = new Function('return ' + src.split(" : 'ru';")[0] + " : 'ru'")();
+  const codes = tabs.map((t) => t[1]);
+  const expect = {
+    es: ['America/New_York', 'America/Los_Angeles', 'America/Toronto', 'America/Lima', 'America/Sao_Paulo', 'US/Eastern', 'Pacific/Honolulu'],
+    zh: ['Asia/Manila', 'Asia/Singapore', 'Asia/Kuala_Lumpur', 'Asia/Jakarta', 'Asia/Bangkok', 'Asia/Ho_Chi_Minh', 'Australia/Sydney', 'Pacific/Auckland'],
+    ru: ['Europe/Tallinn', 'Europe/Moscow', 'Europe/Berlin', 'Asia/Shanghai', 'Asia/Tokyo', 'Asia/Kolkata', 'Etc/UTC', 'Asia/Singapore_not', ''],
+  };
+  for (const [code, zones] of Object.entries(expect)) {
+    assert.ok(codes.includes(code), code + ' is not a tab');
+    for (const z of zones) assert.equal(theirsFor(z), code, z + ' opens on the wrong language');
+  }
 });
 
 await okAsync('the game\'s own hero portraits: a pak is indexed, a texture decoded, and anything odd is a quiet no', async () => {
