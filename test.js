@@ -2010,7 +2010,6 @@ ok('gsi mode reads no memory: nothing of it opens the game, reads it, or starts 
   });
 }
 
-console.log('\n' + passed + ' passed');
 
 // ---- Spanish: the one language told apart by its WORDS, not its script ----
 const { looksSpanish } = await import('./src/spanish.js');
@@ -2023,7 +2022,7 @@ ok('Spanish chat is Spanish, English chat is not, and a doubtful line is left al
   assert.equal(needsTranslation('vamos mid', ['cyrillic']), false);
   assert.equal(needsTranslation('го мид', ['spanish', 'cyrillic']), true);
 });
-ok('their language: the setting switches the script on, relabels the direction, and the tracker starts from it', async () => {
+await okAsync('their language: the setting switches the script on, relabels the direction, and the tracker starts from it', async () => {
   const { createLanguageTracker } = await import('./src/outgoing.js');
   assert.deepEqual(settingsPatch({ theirLanguage: 'Spanish' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Spanish', scripts: ['cyrillic', 'spanish', 'han'] });
   assert.deepEqual(settingsPatch({ theirLanguage: 'Russian' }, { theirLanguage: 'Spanish', scripts: ['spanish', 'cyrillic'] }), { theirLanguage: 'Russian' });
@@ -2037,7 +2036,7 @@ ok('their language: the setting switches the script on, relabels the direction, 
   t.fallback = 'Russian'; t.saw('hello'); assert.equal(t.language, 'Russian');
   assert.ok(fs.readFileSync('src/setup.html', 'utf8').includes('name="theirs"'));
 });
-ok('Chinese for SEA servers: the third choice switches han on, relabels, and the tracker starts from it', async () => {
+await okAsync('Chinese for SEA servers: the third choice switches han on, relabels, and the tracker starts from it', async () => {
   const { createLanguageTracker } = await import('./src/outgoing.js');
   assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic'] }), { theirLanguage: 'Chinese', scripts: ['cyrillic', 'han'] });
   assert.deepEqual(settingsPatch({ theirLanguage: 'Chinese' }, { theirLanguage: 'Russian', scripts: ['cyrillic', 'han'] }), { theirLanguage: 'Chinese' });
@@ -2049,7 +2048,7 @@ ok('Chinese for SEA servers: the third choice switches han on, relabels, and the
   assert.ok(html.includes('value="Chinese"') && html.includes('SEA servers'));
   assert.ok(needsTranslation('中单 别送了', ['han']));
 });
-ok('choosing their language wins over a line seen before, and keeps the window order of scripts', async () => {
+await okAsync('choosing their language wins over a line seen before, and keeps the window order of scripts', async () => {
   const { createLanguageTracker } = await import('./src/outgoing.js');
   const t = createLanguageTracker({ fallback: 'Russian' });
   t.saw('го мид'); assert.equal(t.language, 'Russian');
@@ -2061,7 +2060,7 @@ ok('choosing their language wins over a line seen before, and keeps the window o
   assert.deepEqual(p.scripts, order.filter((id) => ['cyrillic', 'han'].includes(id)));
   assert.ok(fs.readFileSync('src/setup.js', 'utf8').includes("$('sayNow').textContent = ''"));
 });
-ok('eight-language review fixes: the gates, the detector, Ukrainian and Persian, stale said.json lines, the notes', async () => {
+await okAsync('eight-language review fixes: the gates, the detector, Ukrainian and Persian, stale said.json lines, the notes', async () => {
   const { scriptOf, createOutgoing } = await import('./src/outgoing.js');
   // Korean shorthand is chat; laughter alone is not. Arabic digits alone are not.
   assert.equal(needsTranslation('ㅈㅅ', ['hangul']), true);
@@ -2098,7 +2097,7 @@ ok('eight-language review fixes: the gates, the detector, Ukrainian and Persian,
   const html = fs.readFileSync('src/setup.html', 'utf8');
   assert.ok(html.includes('id="displayNow"') && html.includes('id="moreNow"') && !html.includes('id="savedNow"'));
 });
-ok('review round 2: legacy said.json lines asked once more, hand edits kept, Persian by keyboard, Spanish ordinals and contractions', async () => {
+await okAsync('review round 2: legacy said.json lines asked once more, hand edits kept, Persian by keyboard, Spanish ordinals and contractions', async () => {
   const { scriptOf, createOutgoing } = await import('./src/outgoing.js');
   // A 0.6.3 file (no #versions): its hosted lines are asked again once the server's version is known.
   let saved = { 'Russian|going top help': 'иду на топ помогать' };
@@ -2123,7 +2122,7 @@ ok('review round 2: legacy said.json lines asked once more, hand edits kept, Per
   // Korean laughter with ;; costs no call either.
   assert.equal(needsTranslation('ㅋㅋㅋ;;', ['hangul']), false);
 });
-ok('review round 3: exact Spanish ordinals, Spanish marks only, pa\'l, a broken said.json is never overwritten, a stale line is the fallback', async () => {
+await okAsync('review round 3: exact Spanish ordinals, Spanish marks only, pa\'l, a broken said.json is never overwritten, a stale line is the fallback', async () => {
   const { createOutgoing } = await import('./src/outgoing.js');
   for (const s of ['defiendan la 2da torre', 'vamos a la 3er torre', "vamos pa'l mid", "pa'lante todos", 'wallah ¿donde estan?']) assert.equal(looksSpanish(s), true, s);
   for (const e of ['ya 3mo el carry 5ra', 'el 2na mid', 'khalas el feeder é nul']) assert.equal(looksSpanish(e), false, e);
@@ -2138,3 +2137,10 @@ ok('review round 3: exact Spanish ordinals, Spanish marks only, pa\'l, a broken 
   assert.equal((await down('hi', 'Russian')).out, 'старое');
   await assert.rejects(down('never said', 'Russian'));
 });
+
+await okAsync("review round 4: pa'l only with its apostrophe, salu2 with an accent is Spanish", async () => {
+  for (const s of ["vamos pa'l mid", 'salu2 amigos, qué tal', 'hola a2 vamos']) assert.equal(looksSpanish(s), true, s);
+  for (const e of ['gg pal', 'calm down pal', 'nice one pal']) assert.equal(looksSpanish(e), false, e);
+});
+
+console.log('\n' + passed + ' passed');

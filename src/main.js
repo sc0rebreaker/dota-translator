@@ -330,7 +330,10 @@ const SAID_PATH = path.join(DATA_DIR, 'said.json');
 const sayIt = createOutgoing({
   apiKey: () => cfg.geminiApiKey, model: cfg.model,
   remote: () => (hostedOn() ? (text, into) => hosted.say(text, into) : null),
-  store: { read: () => JSON.parse(fs.readFileSync(SAID_PATH, 'utf8').replace(/^\uFEFF/, '')), write: (all) => fs.writeFileSync(SAID_PATH, JSON.stringify(all, null, 2)) },
+  // A file that will not parse (a crash mid-save, a hand edit gone wrong) is
+  // kept beside it as said.broken.json and the app starts afresh - it never
+  // stops saving for good (a review, 2026-09-23).
+  store: { read: () => { const text = fs.readFileSync(SAID_PATH, 'utf8').replace(/^\uFEFF/, ''); try { return JSON.parse(text); } catch { try { fs.copyFileSync(SAID_PATH, SAID_PATH.replace(/\.json$/, '.broken.json')); } catch { /* nothing to keep */ } return {}; } }, write: (all) => fs.writeFileSync(SAID_PATH, JSON.stringify(all, null, 2)) },
 });
 const keys = createKeySender();
 let sayKeyOn = false;

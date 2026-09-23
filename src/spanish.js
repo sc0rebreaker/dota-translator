@@ -35,7 +35,7 @@ juego jugar juega jugando jugador jugadores equipo enemigo enemigos aliado aliad
 compra compren compro cura curar retro retrocede vuelve vuelvo vuelvan tira tiren ataca ataquen
 rapido lento tarde temprano abajo arriba izquierda derecha
 ganamos perdimos ganar perder ganaron perdieron ganando perdiendo
-nose dale ta pa ke kien xfa
+nose dale ta pa ke kien xfa salu2 a2
 atras retirense retirada retrocedan acaba acabo termina defiendan defiende deja dejen hagan sigan pongan mejor apurense matenlo maten mata haces hace hacen hago hacer
 `.split(/\s+/).filter(Boolean));
 
@@ -73,7 +73,7 @@ const DOTA_NUMBERED = /^(t[1-4]|lvl?\d+|x\d+|\d+x|\d+v\d+|\d+(min|m|s|k|seg|sec|
 // Spanish ordinals, exactly: 1ro 2da 3er 4to ... 10mo - not any digit with any
 // ending, which let Arabizi words through (3mo, 5ra, 2na: a review, 2026-09-23).
 const ORDINAL = /^(?:[13](?:ro|ra|er|ero|era)|2(?:do|da)|[456](?:to|ta)|7(?:mo|ma)|8(?:vo|va)|9(?:no|na)|10(?:mo|ma))$/;
-const arabizi = (w) => ARABIZI_WORDS.has(w) || (/[a-z]/.test(w) && /[23579]/.test(w) && !DOTA_NUMBERED.test(w) && !ORDINAL.test(w));
+const arabizi = (w) => ARABIZI_WORDS.has(w) || (/[a-z]/.test(w) && /[23579]/.test(w) && !SPANISH.has(w) && !DOTA_NUMBERED.test(w) && !ORDINAL.test(w));
 // Only Spanish's OWN marks outweigh an Arabizi word: accents are French too.
 const SPANISH_MARKS = /[\u00f1\u00d1\u00bf\u00a1]/;
 // An English contraction (that's, don't, i've); a Spanish elision (pa'l) is not one.
@@ -90,7 +90,8 @@ export function looksSpanish(text) {
   for (const raw of ws) {
     if (CONTRACTION.test(raw)) { en++; continue; }
     const w = raw.replace(/'/g, '');
-    if (SPANISH.has(w) || SPANISH_VERB.test(w) || w === 'pal' || w === 'palante') es += WEAK.has(w) ? 0.5 : 1;
+    // pa'l only WITH its apostrophe: a plain "pal" is English (gg pal).
+    if (SPANISH.has(w) || SPANISH_VERB.test(w) || raw === "pa'l" || raw === "pa'lante") es += WEAK.has(w) ? 0.5 : 1;
     else if (ENGLISH.has(w)) en++;
   }
   if (SPANISH_ONLY.test(t)) es += 2;
