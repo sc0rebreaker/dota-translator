@@ -29,4 +29,9 @@
   // The slider in the hero: once per visit, the first time it is moved by hand.
   var slider = document.querySelector('input[type=range]');
   if (slider) slider.addEventListener('pointerdown', function () { gtag('event', 'slider_used'); }, { once: true });
+  // The hero's language tabs: which of Russian, Spanish and Chinese people look at.
+  var tabs = document.querySelectorAll('.seg button[data-lang]');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function () { gtag('event', 'language_tab', { lang: this.getAttribute('data-lang') }); });
+  }
 })();

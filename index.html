@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dota Translator - Russian Dota 2 chat, in English, live</title>
-<meta name="description" content="Free live translation of Russian Dota 2 chat. In English about two seconds after it is said, from Dota's own chat feed.">
+<title>Dota Translator - Russian, Spanish and Chinese Dota 2 chat, in English, live</title>
+<meta name="description" content="Free live translation of Dota 2 chat: Russian, Spanish and Chinese, in English about two seconds after it is said, from Dota's own chat feed. Answer back in their language.">
 <meta property="og:title" content="They type Russian. You read English.">
 <meta property="og:image" content="https://dotatranslator.live/logo-512.webp">
 <meta property="og:description" content="Free live translation of Dota 2 chat, right above the game's own.">
@@ -84,7 +84,7 @@
   .needs b { color: var(--text); font-weight: 600; }
   .needs a { color: var(--accent); }
   .proofline { margin-top: 22px; color: var(--faint); font-size: 14.5px; }
-  .proofline b { color: var(--text); font-weight: 600; }
+  .proofline b { color: var(--text); font-weight: 600; white-space: nowrap; }
 
   /* the slider: one scene, drawn twice, the top one clipped at the handle */
   .compare { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line-strong); aspect-ratio: 16 / 10; user-select: none; touch-action: pan-y; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); --at: 34%; }
@@ -117,6 +117,22 @@
   .compare input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 5; margin: 0; }
   .compare:focus-within .handle::after { outline: 3px solid rgba(240, 180, 76, 0.45); }
   .caption { margin-top: 12px; color: var(--faint); font-size: 14px; text-align: center; }
+  /* Which language the hero's chat is in: the app's own three choices, under
+     the app's own words for them ("Your teammates write"). Each is the same
+     scene with every line in it what the translator really answered; the
+     headline's language word follows. Without script it is Russian. */
+  h1 b { font-weight: inherit; }
+  .langs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 14px; }
+  .langs-l { color: var(--faint); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .seg { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line-strong); border-radius: 11px; background: var(--panel); }
+  .seg button { font: inherit; font-size: 14.5px; font-weight: 600; color: var(--dim); background: none; border: 0; border-radius: 8px; padding: 7px 13px; cursor: pointer; display: inline-flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .seg button small { font-size: 11px; letter-spacing: 0.06em; color: var(--faint); }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+  .seg button[aria-pressed="true"] small { color: rgba(35, 23, 3, 0.68); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .compare .chat[data-lang] { display: none; }
+  .compare[data-lang="ru"] .chat[data-lang="ru"], .compare[data-lang="es"] .chat[data-lang="es"], .compare[data-lang="zh"] .chat[data-lang="zh"] { display: block; }
 
   /* sections */
   section { padding: 84px 0; }
@@ -217,6 +233,9 @@
     .shots { grid-template-columns: 1fr; }
     .shot .chat, .typing { font-size: clamp(9px, 2.6vw, 13.5px); }
     .handle::after { width: 34px; height: 34px; font-size: 16px; }
+    .langs-l { width: 100%; }
+    .seg { width: 100%; }
+    .seg button { flex: 1; padding: 7px 6px; font-size: 13.5px; gap: 5px; }
   }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
 </style>
@@ -238,8 +257,8 @@
 <header class="hero" id="top">
   <div class="wrap">
     <div>
-      <h1>They type Russian.<br>You read <span>English.</span></h1>
-      <p class="sub">Live translation of Dota 2 chat, right above the game's own. In English about two seconds after it is said. Dota itself sends the chat to the app, through the feed Valve built for overlays. <b>New:</b> <a href="#back">answer them in Russian</a> without leaving the game's chat.</p>
+      <h1>They type <b id="theirs">Russian</b>.<br>You read <span>English.</span></h1>
+      <p class="sub">Live translation of Dota 2 chat, right above the game's own. In English about two seconds after it is said. Dota itself sends the chat to the app, through the feed Valve built for overlays. <b>New:</b> <a href="#back">answer them in their language</a> without leaving the game's chat.</p>
       <div class="cta">
         <a class="btn solid big" href="download.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4L11 12.2V3zM5 18h14v2H5v-2z"/></svg>
@@ -248,25 +267,45 @@
         <a class="btn big" href="#how">See how it works &darr;</a>
       </div>
       <p class="needs">Free, Windows, 80 MB. Nothing to sign up for: download, restart Dota once, play.</p>
-      <p class="proofline"><b>~2s</b> to English &middot; <b>Dota's own feed</b> &middot; free, nothing to sign up for</p>
+      <p class="proofline"><b>Russian, Spanish, Chinese</b> - both ways &middot; <b>~2s</b> to English &middot; <b>Dota's own feed</b></p>
     </div>
 
     <div>
-      <div class="compare" id="compare">
+      <div class="langs" role="group" aria-label="The language your teammates write">
+        <span class="langs-l">Your teammates write</span>
+        <span class="seg">
+          <button type="button" data-lang="ru" aria-pressed="true">Russian <small>EU</small></button>
+          <button type="button" data-lang="es" aria-pressed="false">Spanish <small>US</small></button>
+          <button type="button" data-lang="zh" aria-pressed="false">Chinese <small>SEA</small></button>
+        </span>
+      </div>
+      <div class="compare" id="compare" data-lang="ru">
         <!-- without: the game's chat as it is -->
         <div class="scene">
           <div class="hud"></div>
-          <div class="chat">
+          <div class="chat" data-lang="ru">
             <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>у него бкб, не лезь</span></div>
             <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Луиза:</span><span>гг вп, вы молодцы</span></div>
             <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
             <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
           </div>
+          <div class="chat" data-lang="es">
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Mateo:</span><span lang="es">tiene bkb, no te metas</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Lucía:</span><span lang="es">gg wp, jugaron muy bien</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Diego:</span><span lang="es">juntense todos, pusheamos mid</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Valen:</span><span lang="es">tenes bb? vamos high</span></div>
+          </div>
+          <div class="chat" data-lang="zh">
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4" lang="zh-Hans">阿杰:</span><span lang="zh-Hans">他有BKB，别进去</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2" lang="zh-Hans">&nbsp;小雨:</span><span lang="zh-Hans">gg，你们打得真好</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3" lang="zh-Hans">老王:</span><span lang="zh-Hans">大家集合，推中路</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0" lang="zh-Hans">明明:</span><span lang="zh-Hans">买活好了吗？上高</span></div>
+          </div>
         </div>
         <!-- with: the same, and the English above it -->
         <div class="scene with">
           <div class="hud"></div>
-          <div class="chat">
+          <div class="chat" data-lang="ru">
             <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Иван:</span><span>he has bkb, don't go in</span><span class="o">(у него бкб, не лезь)</span></div>
             <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Луиза:</span><span>gg wp, well played</span><span class="o">(гг вп, вы молодцы)</span></div>
             <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>group up everyone, push mid</span><span class="o">(собираемся все, пушим мид)</span></div>
@@ -277,13 +316,35 @@
             <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Дима:</span><span>собираемся все, пушим мид</span></div>
             <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Саня:</span><span>байбек есть? тогда идём хг</span></div>
           </div>
+          <div class="chat" data-lang="es">
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Mateo:</span><span>he has bkb, dont go in</span><span class="o" lang="es">(tiene bkb, no te metas)</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Lucía:</span><span>gg wp, you played very well</span><span class="o" lang="es">(gg wp, jugaron muy bien)</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Diego:</span><span>group up, push mid</span><span class="o" lang="es">(juntense todos, pusheamos mid)</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Valen:</span><span>do you have bb? let's go high</span></div>
+            <div class="gap"></div>
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4">Mateo:</span><span lang="es">tiene bkb, no te metas</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2">&nbsp;Lucía:</span><span lang="es">gg wp, jugaron muy bien</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3">Diego:</span><span lang="es">juntense todos, pusheamos mid</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0">Valen:</span><span lang="es">tenes bb? vamos high</span></div>
+          </div>
+          <div class="chat" data-lang="zh">
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4" lang="zh-Hans">阿杰:</span><span>he has bkb, dont go in</span><span class="o" lang="zh-Hans">(他有BKB，别进去)</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2" lang="zh-Hans">&nbsp;小雨:</span><span>gg, you guys played really well</span><span class="o" lang="zh-Hans">(gg，你们打得真好)</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3" lang="zh-Hans">老王:</span><span>everyone group up, push mid</span><span class="o" lang="zh-Hans">(大家集合，推中路)</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0" lang="zh-Hans">明明:</span><span>is bb ready? push highground</span></div>
+            <div class="gap"></div>
+            <div class="row"><span class="face f4" data-player="4"></span><span>[Allies]</span><span class="c4" lang="zh-Hans">阿杰:</span><span lang="zh-Hans">他有BKB，别进去</span></div>
+            <div class="row"><span class="face f2" data-player="2"></span><span class="c2" lang="zh-Hans">&nbsp;小雨:</span><span lang="zh-Hans">gg，你们打得真好</span></div>
+            <div class="row"><span class="face f3" data-player="3"></span><span>[Allies]</span><span class="c3" lang="zh-Hans">老王:</span><span lang="zh-Hans">大家集合，推中路</span></div>
+            <div class="row"><span class="face f0" data-player="0"></span><span>[Allies]</span><span class="c0" lang="zh-Hans">明明:</span><span lang="zh-Hans">买活好了吗？上高</span></div>
+          </div>
         </div>
         <span class="tagline l">Without</span>
         <span class="tagline r">With<span class="long"> Dota Translator</span></span>
         <div class="handle" aria-hidden="true"></div>
         <input type="range" min="0" max="100" value="34" aria-label="Drag to compare the chat without and with the translator">
       </div>
-      <p class="caption">Drag the handle. Same chat, same moment.</p>
+      <p class="caption">Drag the handle. The app asks the same thing - which language your teammates write - the first time it starts.</p>
     </div>
   </div>
 </header>
@@ -291,7 +352,7 @@
 <section class="center" id="back">
   <div class="wrap">
     <h2>And now you can <span>answer</span></h2>
-    <p class="lede">Type in Dota's own chat, the way you always do, and press <b>Ctrl+Enter</b> instead of Enter. About a second later it is said - in their language. Plain Enter still sends exactly what you typed.</p>
+    <p class="lede">Type in Dota's own chat, the way you always do, and press <b>Ctrl+Enter</b> instead of Enter. About a second later it is said - in their language: Russian, Spanish or Chinese. Plain Enter still sends exactly what you typed.</p>
     <div class="shots">
       <figure class="shot">
         <div class="frame">
@@ -305,7 +366,7 @@
           </div>
           <span class="tagline l">English &rarr; Russian</span>
         </div>
-        <figcaption><b>You type English, they read Russian.</b> Or whatever your team writes in - the app sees their chat, so it knows.<span class="ex">buy wards please &rarr; <b>купите варды плз</b><br>hi guys, good luck &rarr; <b>привет всем, удачи</b></span></figcaption>
+        <figcaption><b>You type English, they read Russian.</b> Or Spanish, or Chinese: tell the app once which one your team writes, and from then on it follows what it sees in their chat.<span class="ex">buy wards please &rarr; <b>купите варды плз</b><br>hi guys, good luck &rarr; <b lang="es">hola gente, buena suerte</b><br>go rosh after this fight &rarr; <b lang="zh-Hans">打完这波去打肉山</b></span></figcaption>
       </figure>
       <figure class="shot">
         <div class="frame">
@@ -319,10 +380,10 @@
           </div>
           <span class="tagline l">Russian &rarr; English</span>
         </div>
-        <figcaption><b>Or the other way round.</b> One setting, same key: for the player who types Russian and wants the rest of the team to understand.<span class="ex">иду топ, помогите &rarr; <b>going top, help</b><br>купите варды пожалуйста &rarr; <b>buy wards please</b></span></figcaption>
+        <figcaption><b>Or the other way round.</b> One setting, same key: for the player who types Russian, Spanish or Chinese and wants the rest of the team to understand.<span class="ex">иду топ, помогите &rarr; <b>going top, help</b><br><span lang="es">compren wards porfa</span> &rarr; <b>buy wards pls</b><br><span lang="zh-Hans">买个眼吧</span> &rarr; <b>buy wards</b></span></figcaption>
       </figure>
     </div>
-    <p class="fine"><b>The same line every time:</b> what you have said once is remembered on your PC, so the same English is always the same Russian, at once and at no cost - in a plain text file a friend who speaks the language can correct. How it works: the app presses a few keys for you - select, copy, paste, Enter - only when you press Ctrl+Enter and only while Dota is the window in front. Nothing is written to the game. <a href="#catch">More in the catch.</a></p>
+    <p class="fine"><b>The same line every time:</b> what you have said once is remembered on your PC, so the same English always comes out the same, at once and at no cost - in a plain text file a friend who speaks the language can correct. How it works: the app presses a few keys for you - select, copy, paste, Enter - only when you press Ctrl+Enter and only while Dota is the window in front. Nothing is written to the game. <a href="#catch">More in the catch.</a></p>
   </div>
 </section>
 
@@ -394,9 +455,9 @@
       <details><summary>Is the download safe? It is an unsigned .exe from a stranger.</summary><p>Fair. So it is set up to be checked rather than believed: every installer is built by GitHub from the public source, not on my PC; it needs no administrator rights; it talks only to Google, GitHub and Valve's image server; and the fingerprint of each release is published. <a href="download.html#safe">The download page lists all of it</a>, and explains the blue Windows warning, which means "unknown publisher", not "something was found".</p></details>
       <details><summary>Can I get banned?</summary><p>Nobody can promise anything about somebody else's rules, so here is what it does instead: it gets the chat from the feed Valve built into the game for tools like overlays, never touches the game's process and injects nothing. See <a href="#catch">the catch</a> for the rest - two small screen captures, and key presses if you use Ctrl+Enter. Valve has not reviewed this app.</p></details>
       <details><summary>Where does my chat go?</summary><p>Only the lines that need translating leave your PC. They go to this project's translator (translate.dotatranslator.live) and on to Google's Gemini, and the English comes back the same way. Nothing that is said is logged or stored there: what is kept is a short-lived cache of text and its translation, with nothing about who said it, and a count of how many players used it each day. English lines never leave your PC. Hero portraits are read from your own Dota install; if one cannot be found there it is fetched from Valve's own image server. The app also fetches one small settings file from this project's GitHub.</p></details>
-      <details><summary>Can I answer them in Russian?</summary><p>Yes. Type English in Dota's chat and press Ctrl+Enter instead of Enter: it is sent in the language your teammates have been typing in, about a second later. A setting turns it round (Russian &rarr; English). The translation is a model's, tuned for Dota chat; if a Russian speaker tells you a line is off, <a href="https://github.com/sc0rebreaker/dota-translator/issues" rel="noopener">say so in an issue</a> - that is how it gets better. See <a href="#back">answering</a>.</p></details>
+      <details><summary>Can I answer them in their language?</summary><p>Yes. Type English in Dota's chat and press Ctrl+Enter instead of Enter: it is sent in your teammates' language about a second later - the one you picked under "Your teammates write" in the settings (Russian, Spanish or Chinese), or whichever of those they turn out to be typing. A setting turns it round (their language &rarr; English). The translation is a model's, tuned for Dota chat; if somebody who speaks the language tells you a line is off, <a href="https://github.com/sc0rebreaker/dota-translator/issues" rel="noopener">say so in an issue</a> - that is how it gets better. See <a href="#back">answering</a>.</p></details>
       <details><summary>Sometimes lines stay in Russian. Is it broken?</summary><p>Probably not. The translating is done by Google's Gemini, and when that is overloaded it answers slowly or not at all - usually for minutes. The app keeps showing every line as soon as it hears it, exactly as it was written, tells you once that the translator is not answering, and carries on by itself when it is back. Nothing to restart. The other cause is rarer: each player has a daily allowance of translations that normal play never reaches; if you hit it, the app says so and it comes back tomorrow.</p></details>
-      <details><summary>Only Russian?</summary><p>Russian is what it is built and tuned for. <b>Spanish works the same way for US servers:</b> pick "Spanish" under "Your teammates write" in the settings and their Spanish is shown in English, and Ctrl+Enter sends yours in Latin American Spanish. <b>And Chinese for SEA servers:</b> pick "Chinese" there and your Chinese teammates' chat is shown in English, and Ctrl+Enter answers them in Chinese. Chinese pasted into chat anywhere else, voice lines above all, is translated out of the box. Greek, Korean, Arabic and Thai can be switched on in the settings; those are less tested.</p></details>
+      <details><summary>Which languages does it translate?</summary><p><b>Russian</b> is what it was built for, and what it does until told otherwise. <b>Spanish works the same way for US servers:</b> pick "Spanish" under "Your teammates write" in the settings and their Spanish is shown in English, and Ctrl+Enter sends yours in Latin American Spanish. <b>And Chinese for SEA servers:</b> pick "Chinese" there and your Chinese teammates' chat is shown in English, and Ctrl+Enter answers them in Chinese. Chinese pasted into chat anywhere else, voice lines above all, is translated out of the box. Greek, Korean, Arabic and Thai can be switched on in the settings; those are less tested.</p></details>
       <details><summary>Does it update itself?</summary><p>Yes. It looks for a new version when it starts and every few hours after, downloads it quietly, and installs it the next time you close the app - never in the middle of a match. The version you are running is in the tray icon's menu.</p></details>
       <details><summary>Can I check what it does?</summary><p>Yes, all of it. The <a href="https://github.com/sc0rebreaker/dota-translator">full source is on GitHub</a>, and the installer is built there from that source by an automated job, in the open, not on somebody's PC. The part that listens to the game's feed is <a href="https://github.com/sc0rebreaker/dota-translator/blob/master/src/gsisource.js">gsisource.js</a>, the screen capture is one plain-text file, <a href="https://github.com/sc0rebreaker/dota-translator/blob/master/src/rowgrab.ps1">rowgrab.ps1</a>; the part that talks to the translator is <a href="https://github.com/sc0rebreaker/dota-translator/blob/master/src/hosted.js">hosted.js</a>.</p></details>
       <details><summary>Is it open source?</summary><p>The source is public and free to use, read and change for non-commercial purposes (PolyForm Noncommercial). Strictly that makes it source-available rather than open source: a paid product may not bundle it.</p></details>
@@ -445,6 +506,18 @@
     img.onerror = () => img.remove();
     img.src = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/' + byPlayer[p] + '.png';
     face.appendChild(img);
+  }
+
+  // The three languages: the scene, and the headline's word, follow the
+  // tab. The same players (and portraits) in each; only the words change.
+  const theirs = document.getElementById('theirs');
+  const tabs = document.querySelectorAll('.seg button');
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => {
+      box.dataset.lang = tab.dataset.lang;
+      theirs.textContent = tab.firstChild.textContent.trim();
+      for (const t of tabs) t.setAttribute('aria-pressed', String(t === tab));
+    });
   }
 
   // Until somebody touches it, it keeps swaying to say that it moves (the
