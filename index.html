@@ -63,11 +63,18 @@
 
   /* nav */
   nav { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px); background: rgba(10, 13, 16, 0.78); border-bottom: 1px solid var(--line); }
-  nav .wrap { display: flex; align-items: center; gap: 28px; height: 62px; }
+  nav .wrap { display: flex; align-items: center; gap: 20px; height: 62px; }
   .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 21px; text-decoration: none; margin-right: auto; white-space: nowrap; }
   .brand b { color: var(--accent); font-weight: 500; font-style: italic; }
   nav a.link { color: var(--dim); text-decoration: none; font-size: 15px; }
   nav a.link:hover { color: var(--text); }
+  nav a.treasure-nav { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 7px 15px 7px 83px; border: 1px solid rgba(240, 180, 76, 0.48); border-radius: 9px; background: linear-gradient(135deg, rgba(240, 180, 76, 0.17), rgba(240, 180, 76, 0.05)); color: #ffd48a; font-size: 14px; font-weight: 700; text-decoration: none; white-space: nowrap; box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 0 18px rgba(240, 180, 76, 0.09); transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+  nav a.treasure-nav:hover { transform: translateY(-1px); border-color: var(--accent); background: rgba(240, 180, 76, 0.2); box-shadow: 0 0 22px rgba(240, 180, 76, 0.19); }
+  nav a.treasure-nav:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .treasure-nav img { position: absolute; left: -9px; top: 50%; width: 96px; height: auto; pointer-events: none; transform: translateY(-50%) rotate(-2deg); transform-origin: 55% 65%; filter: drop-shadow(0 2px 4px #000) drop-shadow(0 0 9px rgba(255, 73, 35, 0.58)); animation: treasure-float 3.2s ease-in-out infinite; }
+  nav a.treasure-nav:hover img { left: 8px; width: 68px; filter: drop-shadow(0 1px 2px #000) drop-shadow(0 0 3px rgba(255, 83, 43, 0.7)); animation: treasure-wiggle 550ms ease-in-out 1; }
+  @keyframes treasure-float { 0%, 100% { transform: translateY(-50%) rotate(-2deg); } 50% { transform: translateY(calc(-50% - 2px)) rotate(2deg); } }
+  @keyframes treasure-wiggle { 0%, 100% { transform: translateY(-50%) rotate(-2deg); } 25% { transform: translateY(-50%) rotate(3deg); } 55% { transform: translateY(-50%) rotate(-3deg); } 80% { transform: translateY(-50%) rotate(2deg); } }
   .btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 9px; border-radius: 10px; padding: 10px 16px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--line-strong); transition: transform 120ms ease, background 120ms ease; }
   .btn:hover { transform: translateY(-1px); }
   .btn.solid { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
@@ -212,6 +219,7 @@
   footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--faint); font-size: 13.5px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 
+  @media (max-width: 1100px) { nav a.link { display: none; } }
   @media (max-width: 900px) {
     .hero { padding-top: 44px; }
     .hero .wrap { grid-template-columns: 1fr; gap: 34px; }
@@ -219,7 +227,6 @@
     .numbers { grid-template-columns: 1fr 1fr; }
     .numbers div:nth-child(2) { border-right: 0; }
     .numbers div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-    nav a.link { display: none; }
     nav .wrap { gap: 12px; }
     nav .btn { padding: 8px 13px; }
     h1 { font-size: clamp(38px, 11vw, 60px); }
@@ -237,7 +244,13 @@
     .seg { width: 100%; }
     .seg button { flex: 1; padding: 7px 6px; font-size: 13.5px; gap: 5px; }
   }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+  @media (max-width: 700px) {
+    nav .wrap { height: auto; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+    nav .brand { order: 1; }
+    nav .download-nav { order: 2; }
+    nav a.treasure-nav { order: 3; flex-basis: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } .treasure-nav img, nav a.treasure-nav:hover img { animation: none; transform: translateY(-50%); } }
 </style>
 <script src="analytics.js" defer></script>
 </head>
@@ -246,11 +259,12 @@
 <nav>
   <div class="wrap">
     <a class="brand" href="#top"><img src="logo-64.webp" width="30" height="30" alt=""><span>Dota <b>Translator</b></span></a>
+    <a class="treasure-nav" href="treasures/"><img src="treasure-crimson-nav.webp" width="96" height="64" alt=""><span>Try the Treasure Simulator</span></a>
     <a class="link" href="#how">How it works</a>
     <a class="link" href="#inside">What it does</a>
     <a class="link" href="#catch">The catch</a>
     <a class="link" href="#faq">Questions</a>
-    <a class="btn solid" href="download.html">Download free</a>
+    <a class="btn solid download-nav" href="download.html">Download free</a>
   </div>
 </nav>
 
@@ -508,7 +522,7 @@
 <footer>
   <div class="wrap">
     <span>Dota Translator is a fan project. Not affiliated with or endorsed by Valve. Dota 2 is a trademark of Valve Corporation.</span>
-    <span><a href="https://ko-fi.com/sc0rebreaker" rel="noopener" style="color:inherit">Support the developer on Ko-fi</a> &nbsp;&middot;&nbsp; PolyForm Noncommercial 1.0.0</span>
+    <span><a href="treasures/" style="color:inherit">Dota 2 Treasure Simulator</a> &nbsp;&middot;&nbsp; <a href="https://ko-fi.com/sc0rebreaker" rel="noopener" style="color:inherit">Support the developer on Ko-fi</a> &nbsp;&middot;&nbsp; PolyForm Noncommercial 1.0.0</span>
   </div>
 </footer>
 
